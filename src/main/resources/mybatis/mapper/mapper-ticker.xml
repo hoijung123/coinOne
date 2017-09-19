@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="coin.tran.dao.DbMapper">
+
+	<!-- /* select dual */ -->
+	<select id="getDual" resultType="java.lang.String">
+		select count(1) from t_ticker
+	</select>
+
+	<insert id="registerTicker">
+		INSERT INTO `coinone`.`t_ticker`
+		(`currency`,
+		`timestamp`,
+		`high`,
+		`low`,
+		`last`,
+		`first`,
+		`volume`)
+		VALUES
+		(#{currency},
+		#{timestamp},
+		#{high},
+		#{low},
+		#{last},
+		#{first},
+		#{volume})
+	</insert>
+
+	<!-- /* select dual */ -->
+	<select id="getTickerList" resultType="coinone.tran.vo.TickerVO">
+		SELECT currency,
+		date,
+		status,
+		opening_price,
+		closing_price,
+		min_price,
+		max_price,
+		average_price,
+		units_traded,
+		volume_1day,
+		volume_7day,
+		buy_price,
+		sell_price
+		FROM t_ticker
+		where (currency, date)
+		in (select currency , max(date) from t_ticker
+		group by currency)
+	</select>
+
+	<!-- /* get_ticker_static : 시세표준편자조회 */ -->
+	<select id="getTickerStaticList" resultType="coinone.tran.vo.TickerStaticVO">
+		select t.currency,
+		t.date, t.max_closing_price, t.min_closing_price,
+		t.avg_closing_price ,
+		t.std_closing_price, cnt
+		,(t.std_closing_price/t.avg_closing_price) *
+		100 as
+		std_avg_closing_price
+		from (
+		select currency, max(date) as date,
+		max(closing_price) as max_closing_price, min(closing_price)
+		as
+		min_closing_price
+		, avg(closing_price) as avg_closing_price,
+		std(closing_price) as
+		std_closing_price, count(1) as cnt from t_ticker
+		group by currency) t
+	</select>
+
+	<!-- /* select dual */ -->
+	<select id="getTranConfigList" resultType="coinone.tran.vo.TranConfigVO">
+		SELECT
+		`t_tran_config`.`currency`,
+		`t_tran_config`.`tran_type`,
+		`t_tran_config`.`target_price`,
+		`t_tran_config`.`status`,
+		`t_tran_config`.`tran_yn`,
+		`t_tran_config`.`units`
+		FROM
+		`bitsum`.`t_tran_config`
+	</select>
+
+	<insert id="registerTickerStatic">
+		INSERT INTO `bitsum`.`t_ticker_statics`
+		(`currency`,
+		`date_type`,
+		`date`,
+		`max_closing_price`,
+		`min_closing_price`,
+		`avg_closing_price`,
+		`cnt`,
+		`std_avg_closing_price`)
+		VALUES
+		(#{currency},
+		#{date_type},
+		#{date},
+		#{max_closing_price},
+		#{min_closing_price},
+		#{avg_closing_price},
+		#{cnt},
+		#{std_avg_closing_price})
+	</insert>
+
+	<insert id="registerTickerStaticList">
+		INSERT INTO `bitsum`.`t_ticker_statics`
+		(`currency`,
+		`date_type`,
+		`date`,
+		`max_closing_price`,
+		`min_closing_price`,
+		`avg_closing_price`,
+		`std_closing_price`,
+		`cnt`,
+		`std_avg_closing_price`)
+
+		select t.currency,
+		'D',
+		t.date,
+		t.max_closing_price, t.min_closing_price,
+		t.avg_closing_price ,
+		t.std_closing_price, cnt
+		,(t.std_closing_price/t.avg_closing_price) *
+		100 as
+		std_avg_closing_price
+		from (
+		select currency, max(date) as date,
+		max(closing_price) as max_closing_price, min(closing_price)
+		as
+		min_closing_price
+		, avg(closing_price) as avg_closing_price,
+		std(closing_price) as
+		std_closing_price, count(1) as cnt from t_ticker
+		group by currency) t
+	</insert>
+
+	<!-- /* select dual */ -->
+	<select id="getTranConfig" resultType="coinone.tran.vo.TranConfigVO">
+		SELECT
+		`t_tran_config`.`currency`,
+		`t_tran_config`.`target_price`,
+		`t_tran_config`.`status`,
+		`t_tran_config`.`tran_yn`
+		,`t_tran_config`.`units`
+		FROM
+		`bitsum`.`t_tran_config`
+		WHERE currency =
+		#{currency}
+		AND tran_type =
+		#{tran_type}
+	</select>
+
+	<update id="updateTranConfig">
+		UPDATE `bitsum`.`t_tran_config`
+		SET
+		<if test="tran_yn != null">
+			tran_yn = #{tran_yn},
+		</if>
+		<if test="status != null">
+			status = #{status},
+		</if>
+		<if test="target_price != null">
+			target_price = #{target_price},
+		</if>
+		<if test="units != null">
+			units = #{units},
+		</if>
+		<if test="tran_yn != null">
+			tran_yn = #{tran_yn},
+		</if>
+		currency = #{currency}
+		WHERE `currency` = #{currency} AND `tran_type` =
+		#{tran_type}
+	</update>
+
+	<update id="insertTranLog">
+		INSERT INTO `bitsum`.`t_tran_log`
+		(`order_id`,
+		`status`,
+		`cont_id`,
+		`units`,
+		`price`,
+		`total`,
+		`fee`,
+		`log_date`)
+		VALUES
+		(#{order_id},
+		#{status},
+		#{cont_id},
+		#{units},
+		#{price},
+		#{total},
+		#{fee})
+	</update>
+
+
+	<insert id="registerConfig">
+		INSERT INTO `bitsum`.`t_config`
+		(`cf_cd`,
+		`cf_val,
+		'cf_date')
+		VALUES
+		(#{cf_cd},
+		#{cf_val},
+		now())
+	</insert>
+
+	<update id="updateConfig">
+		UPDATE `bitsum`.`t_config`
+		SET
+		<if test="cf_val != null">
+			cf_val = #{cf_val},
+		</if>
+		cf_date = now()
+		WHERE `cf_cd` = #{cf_cd}
+	</update>
+
+	<select id="getConfig" resultType="coinone.tran.vo.ConfigVO">
+		SELECT
+		`t_config`.`cf_cd`,
+		`t_config`.`cf_cd`,
+		`t_config`.`cf_date`
+		FROM
+		`bitsum`.`t_config`
+		WHERE
+		cf_cd =
+		#{cf_cd}
+	</select>
+
+
+	<select id="getOrdersBuy" resultType="coinone.tran.vo.OrdersBuyVO">
+		SELECT
+		`t_orders_buy`.`buy_seq`,
+		`t_orders_buy`.`currency_pair`,
+		`t_orders_buy`.`type`,
+		`t_orders_buy`.`price`,
+		`t_orders_buy`.`coin_amount`,
+		`t_orders_buy`.`fiat_amount`,
+		`t_orders_buy`.`buy_date`,
+		`t_orders_buy`.`order_id`,
+		`t_orders_buy`.`status`
+		FROM `bitsum`.`t_orders_buy`
+		WHERE currency_pair
+		=
+		#{currency_pair}
+		AND buy_seq =
+		#{buy_seq}
+	</select>
+
+
+	<select id="getOrdersBuyList" resultType="coinone.tran.vo.OrdersBuyVO">
+		SELECT
+		`t_orders_buy`.`buy_seq`,
+		`t_orders_buy`.`currency_pair`,
+		`t_orders_buy`.`type`,
+		`t_orders_buy`.`price`,
+		`t_orders_buy`.`coin_amount`,
+		`t_orders_buy`.`fiat_amount`,
+		`t_orders_buy`.`buy_date`,
+		`t_orders_buy`.`status`,
+		`t_orders_buy`.`order_id`
+		FROM
+		`bitsum`.`t_orders_buy`
+		WHERE
+		currency_pair =
+		#{currency_pair}
+		order by
+		buy_seq
+	</select>
+
+	<insert id="registerOrdersBuy">
+		INSERT INTO `bitsum`.`t_orders_buy`
+		(`buy_seq`,
+		`currency_pair`,
+		`type`,
+		`price`,
+		`coin_amount`,
+		`fiat_amount`,
+		`buy_date`,
+		'order_id',
+		'stauts')
+		VALUES
+		(#{buy_seq},
+		#{currency_pair},
+		#{type},
+		#{price},
+		#{coin_amount},
+		#{fiat_amount},
+		now(),
+		'',
+		'N')
+	</insert>
+
+	<update id="updateOrdersBuy">
+		UPDATE `bitsum`.`t_orders_buy`
+		SET
+		<if test="type != null">
+			type = #{type},
+		</if>
+		<if test="price != null">
+			price = #{price},
+		</if>
+		<if test="coin_amount != null">
+			coin_amount = #{coin_amount},
+		</if>
+		<if test="fiat_amount != null">
+			fiat_amount = #{fiat_amount},
+		</if>
+		<if test="order_id != null">
+			order_id = #{order_id},
+		</if>
+		<if test="status != null">
+			status = #{status},
+		</if>
+		currency_pair = #{currency_pair}
+		WHERE currency_pair = #{currency_pair}
+		AND buy_seq = #{buy_seq}
+	</update>
+
+
+	<select id="getOrdersSell" resultType="coinone.tran.vo.OrdersSellVO">
+		SELECT
+		`sell_seq`,
+		`currency_pair`,
+		`type`,
+		`price`,
+		`coin_amount`,
+		`sell_date`,
+		`status`
+		FROM
+		`bitsum`.`t_orders_sell`
+		WHERE currency_pair
+		=
+		#{currency_pair}
+		AND
+		sell_seq =
+		#{sell_seq}
+	</select>
+
+
+	<select id="getOrdersSellList" resultType="coinone.tran.vo.OrdersSellVO">
+		SELECT
+		`sell_seq`,
+		`currency_pair`,
+		`type`,
+		`price`,
+		`coin_amount`,
+		`sell_date`,
+		`status`,
+		order_id
+		FROM
+		`bitsum`.`t_orders_sell`
+		WHERE
+		currency_pair =
+		#{currency_pair}
+		order by
+		sell_seq
+	</select>
+
+	<insert id="registerOrdersSell">
+		INSERT INTO `bitsum`.`t_orders_sell`
+		(`sell_seq`,
+		`currency_pair`,
+		`type`,
+		`price`,
+		`coin_amount`,
+		`sell_date`,
+		'order_id',
+		'stauts')
+		VALUES
+		(#{sell_seq},
+		#{currency_pair},
+		#{type},
+		#{price},
+		#{coin_amount},
+		now(),
+		'',
+		'N')
+	</insert>
+
+	<update id="updateOrdersSell">
+		UPDATE `bitsum`.`t_orders_sell`
+		SET
+		<if test="type != null">
+			type = #{type},
+		</if>
+		<if test="price != null">
+			price = #{price},
+		</if>
+		<if test="coin_amount != null">
+			coin_amount = #{coin_amount},
+		</if>
+		<if test="order_id != null">
+			order_id = #{order_id},
+		</if>
+		<if test="status != null">
+			status = #{status},
+		</if>
+		currency_pair = #{currency_pair}
+		WHERE currency_pair = #{currency_pair}
+		AND sell_seq = #{sell_seq}
+	</update>
+</mapper>

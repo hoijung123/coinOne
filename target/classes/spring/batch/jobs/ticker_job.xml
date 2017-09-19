@@ -1,0 +1,33 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+		http://www.springframework.org/schema/batch/spring-batch-2.2.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	">
+
+	<import resource="../config/context.xml" />
+	<import resource="../config/database.xml" />
+
+	<bean id="reader" class="coinone.tran.batch.NullItemReader" scope="step">
+	</bean>
+	<bean id="writer" class="coinone.tran.batch.NullItemWriter" scope="step">
+	</bean>
+
+
+	<bean id="tickerProcessor" class="coinone.tran.batch.TickerProcessor" />
+
+	<batch:job id="tickerJob">
+		<batch:step id="step1">
+
+			<batch:tasklet transaction-manager="transactionManager">
+
+				<batch:chunk reader="reader" processor="tickerProcessor"
+					writer="writer" commit-interval="1" />
+
+			</batch:tasklet>
+
+		</batch:step>
+	</batch:job>
+
+</beans>

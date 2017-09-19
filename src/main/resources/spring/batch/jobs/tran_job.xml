@@ -1,0 +1,79 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+		http://www.springframework.org/schema/batch/spring-batch-2.2.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	">
+
+	<import resource="../config/context.xml" />
+	<import resource="../config/database.xml" />
+
+
+	<bean id="reader" class="korbit.tran.batch.NullItemReader" scope="step">
+	</bean>
+	<bean id="writer" class="korbit.tran.batch.NullItemWriter" scope="step">
+	</bean>
+
+
+	<bean id="tranProcessor" class="korbit.tran.batch.TranProcessor" />
+
+	<batch:job id="tranJob">
+		<batch:step id="tranStep1">
+
+			<batch:tasklet transaction-manager="transactionManager">
+
+				<batch:chunk reader="reader" processor="tranProcessor"
+					writer="writer" commit-interval="1" />
+
+			</batch:tasklet>
+
+		</batch:step>
+	</batch:job>
+
+	<bean id="tranLimitBuyProcessor" class="korbit.tran.batch.TranLimitBuyProcessor" />
+
+	<batch:job id="tranLimitBuyJob">
+		<batch:step id="tranLimitBuyStep1">
+
+			<batch:tasklet transaction-manager="transactionManager">
+
+				<batch:chunk reader="reader" processor="tranLimitBuyProcessor"
+					writer="writer" commit-interval="1" />
+
+			</batch:tasklet>
+
+		</batch:step>
+	</batch:job>
+
+	<bean id="tranLimitSellProcessor" class="korbit.tran.batch.TranLimitSellProcessor" />
+
+	<batch:job id="tranLimitSellJob">
+		<batch:step id="tranLimitSellStep1">
+
+			<batch:tasklet transaction-manager="transactionManager">
+
+				<batch:chunk reader="reader" processor="tranLimitSellProcessor"
+					writer="writer" commit-interval="1" />
+
+			</batch:tasklet>
+
+		</batch:step>
+	</batch:job>
+
+	<bean id="tranCompleteChkProcessor" class="korbit.tran.batch.TranCompleteChkProcessor" />
+
+	<batch:job id="tranCompleteChkJob">
+		<batch:step id="tranCompleteChkStep1">
+
+			<batch:tasklet transaction-manager="transactionManager">
+
+				<batch:chunk reader="reader" processor="tranCompleteChkProcessor"
+					writer="writer" commit-interval="1" />
+
+			</batch:tasklet>
+
+		</batch:step>
+	</batch:job>
+
+</beans>
