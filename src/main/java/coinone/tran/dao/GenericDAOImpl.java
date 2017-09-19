@@ -11,7 +11,7 @@ public abstract class GenericDAOImpl<E, K> implements GenericDAO<E, K> {
 	@Inject
 	private SqlSession sqlSession;
 	
-	private static final String namespace = 
+	public String namespace = 
 			"com.mycom.myapp.dao.DbMapper";
 	
 	@Override
@@ -33,5 +33,10 @@ public abstract class GenericDAOImpl<E, K> implements GenericDAO<E, K> {
 	public List<E> getList() {
 		return sqlSession.selectList(namespace + ".getList");
 	}
+	
+	@Override
+	public void setNameSpace(String namespace) {
+		this.namespace = namespace;
+	}	
 
 }// class

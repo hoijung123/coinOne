@@ -41,21 +41,17 @@ public class TickerProcessor implements ItemProcessor<String, String> {
 
 		TickerVO tickerVO = api.getTickerAll();
 
-		Class c = Class.forName("TickerVO");
-		Object target = c.newInstance();
-		
-		List<String> methodList = new ArrayList<String>(Arrays.asList("getBtc", "getEth", "getEtc", "getXrp", "getBch",
-				"getDash", "getLtc", "getRep", "getSteem", "getXmr", "getZec", "getQtum"));
+		Class c = Class.forName("coinone.tran.vo.TickerVO");
+
+		List<String> methodList = new ArrayList<String>(
+				Arrays.asList("getBtc", "getEth", "getEtc", "getXrp", "getBch", "getQtum"));
 
 		for (String s : methodList) {
 			Method m = c.getDeclaredMethod(s);
-			TickerDtlVO bch = (TickerDtlVO) m.invoke(target);
-			bch.setTimestamp(tickerVO.getTimestamp());
-			tickerDAO.registerTicker(bch);
+			TickerDtlVO dtlVO = (TickerDtlVO) m.invoke(tickerVO);
+			dtlVO.setTimestamp(tickerVO.getTimestamp());
+			tickerDAO.register(dtlVO);
 		}
-		// TickerDtlVO bch = tickerVO.getBch();
-
-		// tickerDAO.registerTicker(bch);
 
 		logger.info("getTickerAll --> ");
 		return "item";

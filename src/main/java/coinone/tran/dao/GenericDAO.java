@@ -10,5 +10,6 @@ public interface GenericDAO<E, K> {
 	public List<E> getList();
 	//public void update();
 	//public void delete();
+	public void setNameSpace(String namespace);
 	
 }// interface

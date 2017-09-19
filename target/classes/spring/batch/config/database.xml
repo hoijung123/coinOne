@@ -42,7 +42,7 @@
 		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 
-	<jdbc:initialize-database data-source="dataSource">
+	<jdbc:initialize-database data-source="dataSource" enabled="false">
 		<jdbc:script location="org/springframework/batch/core/schema-drop-mysql.sql" />
 		<jdbc:script location="org/springframework/batch/core/schema-mysql.sql" />
 	</jdbc:initialize-database>

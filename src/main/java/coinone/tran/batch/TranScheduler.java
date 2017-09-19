@@ -15,7 +15,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 
 public class TranScheduler {
-	@Scheduled(fixedRate = 1000 * 10)
+	@Scheduled(fixedRate = 1000 * 30)
 	public void tranLimitSellJob() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 

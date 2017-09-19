@@ -11,33 +11,27 @@ import coinone.tran.vo.TickerDtlVO;
 import coinone.tran.vo.TickerVO;
 import coinone.tran.vo.TranConfigVO;
 
-
 @Repository
-public class TickerDAOImpl extends GenericDAOImpl<TickerDtlVO, String> implements TickerDAO {
+public class TickerDAOImpl implements TickerDAO {
 	@Inject
 	private SqlSession sqlSession;
-	
-	private static final String namespace = 
-			"coin.tran.dao.DbMapper";
-	@Override
-	public List<TickerDtlVO> getTickerList() {
+	private static final String namespace = "coinone.tran.dao.DbMapper.Ticker";
+
+	public void register(TickerDtlVO vo) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectList(namespace + ".getTickerList");
+		sqlSession.insert(namespace + ".register", vo);
+
 	}
-	@Override
-	public TickerDtlVO getTicker(TickerDtlVO vo) {
+
+	public TickerDtlVO get(String userid) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(namespace + ".getTicker", vo);
+		return null;
 	}
-	@Override
-	public void updateTicker(TickerDtlVO vo) {
+
+	public List<TickerDtlVO> getList() {
 		// TODO Auto-generated method stub
-		sqlSession.update(namespace + ".updateTicker", vo);
+		sqlSession.selectList(namespace + ".getList");
+		return null;
 	}
-	@Override
-	public void registerTicker(TickerDtlVO vo) {
-		// TODO Auto-generated method stub
-		sqlSession.update(namespace + ".registerTicker", vo);
-		
-	}
+
 }

@@ -30,8 +30,6 @@
 	<context:component-scan base-package="korbit.tran" />
 	<context:component-scan base-package="korbit.tran.batch" />
 
-	<import resource="classpath:/META-INF/spring/module-context.xml" />
-
 
 
 </beans>

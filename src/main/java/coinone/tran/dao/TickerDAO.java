@@ -5,9 +5,12 @@ import java.util.List;
 import coinone.tran.vo.TickerDtlVO;
 
 
-public interface TickerDAO extends GenericDAO<TickerDtlVO, String> {
-	public List<TickerDtlVO> getTickerList();
-	public TickerDtlVO getTicker(TickerDtlVO vo);
-	public void updateTicker(TickerDtlVO vo);
-	public void registerTicker(TickerDtlVO vo);
+public interface TickerDAO  {
+
+	void register(TickerDtlVO vo);
+
+	public TickerDtlVO get(String userid);
+
+	public List<TickerDtlVO> getList();
+
 }
