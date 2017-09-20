@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <style> /* set the CSS */
 body {
 	font: 12px Arial;
@@ -18,15 +20,37 @@ path {
 	shape-rendering: crispEdges;
 }
 </style>
+<script src="/coinone/resources/js/jquery-3.2.1.js"></script>
+<script>
+	function change(currency)
+	{
+		var loc = "lineChart?currency=" + currency;
+		location.href = loc;
+	}
+</script>
 <body>
+
+	<select name="currency" id="currency" onchange="change(this.value);">
+		<option value="bch"
+			<c:if test="${currency eq 'bch'}" >selected</c:if> >bch</option>
+		<option value="btc" <c:if test="${currency eq 'btc'}" >selected</c:if> >btc</option>		
+		<option value="eth" <c:if test="${currency eq 'eth'}" >selected</c:if> >eth</option>
+		<option value="etc" <c:if test="${currency eq 'etc'}" >selected</c:if> >etc</option>
+		<option value="xrp" <c:if test="${currency eq 'xrp'}" >selected</c:if> >xrp</option>		
+		<option value="qtum" <c:if test="${currency eq 'qtum'}" >selected</c:if> >qtum</option>
+	</select> &nbsp; &nbsp;<label id="last"><fmt:formatNumber value="${last}" pattern="###,###" /></label>
+	
+	<br>
 
 	<!-- load the d3.js library -->
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 
 	<script>
+	
+	
 
 // Set the dimensions of the canvas / graph
-var margin = {top: 30, right: 20, bottom: 30, left: 50},
+var margin = {top: 30, right: 20, bottom: 30, left: 60},
     width = 600 - margin.left - margin.right,
     height = 270 - margin.top - margin.bottom;
 
@@ -58,7 +82,7 @@ var svg = d3.select("body")
         .attr("transform", 
               "translate(" + margin.left + "," + margin.top + ")");
 
-var url = document.location.protocol+"//"+document.location.host +"/coinone/jsonTest";
+var url = document.location.protocol+"//"+document.location.host +"/coinone/jsonTickerList?currency=${currency}";
 	
 // Get the data
 d3.json(url, function (error, json) {	
@@ -92,7 +116,8 @@ d3.json(url, function (error, json) {
 
 var inter = setInterval(function() {
     updateData();
-}, 1000); 
+    updateLast();
+}, 5000); 
 
 //** Update data section (Called from the onclick)
 function updateData() {
@@ -120,6 +145,45 @@ function updateData() {
         .call(yAxis);
 
 	});
+}
+
+function updateLast() {
+	var url = document.location.protocol+"//"+document.location.host +"/coinone/jsonTicker"; 
+    var params="currency=${currency}";  
+  
+    $.ajax({      
+        type:"GET",  
+        url:url,  
+        dataType:"json",    
+        data:params,      
+        success:function(args){   
+        	console.log(args.last);
+            $("#last").html(comma(args.last));      
+        },           
+        error:function(e){  
+           // alert(e.responseText);  
+        }  
+    });  
+}
+
+currency.focus();
+
+function comma(num){
+    var len, point, str; 
+       
+    num = num + ""; 
+    point = num.length % 3 ;
+    len = num.length; 
+   
+    str = num.substring(0, point); 
+    while (point < len) { 
+        if (str != "") str += ","; 
+        str += num.substring(point, point + 3); 
+        point += 3; 
+    } 
+     
+    return str;
+ 
 }
 
 </script>

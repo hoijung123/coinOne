@@ -33,4 +33,10 @@ public class TickerDAOImpl implements TickerDAO {
 		return sqlSession.selectList(namespace + ".getList", vo);
 	}
 
+	@Override
+	public TickerDtlVO getLastestTicker(TickerDtlVO vo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + ".getLastestTicker", vo);
+	}
+
 }

@@ -49,7 +49,24 @@
 		FROM
 		`coinone`.`t_ticker`
 		where currency = #{currency}
-		and timestamp = #{timestamp}
+		and timestamp =
+		#{timestamp}
 	</select>
 
+
+	<select id="getLastestTicker" resultType="coinone.tran.vo.TickerDtlVO">
+		SELECT
+		`t_ticker`.`currency`,
+		`t_ticker`.`timestamp`,
+		`t_ticker`.`high`,
+		`t_ticker`.`low`,
+		`t_ticker`.`last`,
+		`t_ticker`.`first`,
+		`t_ticker`.`volume`
+		FROM
+		`coinone`.`t_ticker`
+		where (currency, timestamp)
+		in (select currency, max(timestamp) from t_ticker where currency =
+		#{currency} )
+	</select>
 </mapper>
