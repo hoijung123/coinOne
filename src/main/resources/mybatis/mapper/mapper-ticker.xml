@@ -30,8 +30,14 @@
 		`t_ticker`.`first`,
 		`t_ticker`.`volume`
 		FROM `coinone`.`t_ticker`
+		where
+		1=1
+		<if test="currency != null">
+			AND currency =
+			#{currency}
+		</if>
 	</select>
-	
+
 	<select id="get" resultType="coinone.tran.vo.TickerDtlVO">
 		SELECT `t_ticker`.`currency`,
 		`t_ticker`.`timestamp`,
@@ -40,9 +46,10 @@
 		`t_ticker`.`last`,
 		`t_ticker`.`first`,
 		`t_ticker`.`volume`
-		FROM `coinone`.`t_ticker`
-	   where currency = #{currency}
-	   and timestamp = #{timestamp}
-	</select>	
+		FROM
+		`coinone`.`t_ticker`
+		where currency = #{currency}
+		and timestamp = #{timestamp}
+	</select>
 
 </mapper>

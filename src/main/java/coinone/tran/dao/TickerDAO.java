@@ -11,6 +11,6 @@ public interface TickerDAO  {
 
 	public TickerDtlVO get(String userid);
 
-	public List<TickerDtlVO> getList();
+	public List<TickerDtlVO> getList(TickerDtlVO vo);
 
 }

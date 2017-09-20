@@ -52,6 +52,51 @@ public class TickerDtlVO extends BaseVO {
 	Long high = null;
 	Long first = null;
 	Long low = null;
+	Long yesterday_last = null;
+	Long yesterday_low = null;
+	Long yesterday_first = null;
+	Float yesterday_volume = null;
+	Long yesterday_high = null;
+	
+	public Long getYesterday_low() {
+		return yesterday_low;
+	}
+
+	public void setYesterday_low(Long yesterday_low) {
+		this.yesterday_low = yesterday_low;
+	}
+
+	public Long getYesterday_first() {
+		return yesterday_first;
+	}
+
+	public void setYesterday_first(Long yesterday_first) {
+		this.yesterday_first = yesterday_first;
+	}
+
+	public Float getYesterday_volume() {
+		return yesterday_volume;
+	}
+
+	public void setYesterday_volume(Float yesterday_volume) {
+		this.yesterday_volume = yesterday_volume;
+	}
+
+	public Long getYesterday_high() {
+		return yesterday_high;
+	}
+
+	public void setYesterday_high(Long yesterday_high) {
+		this.yesterday_high = yesterday_high;
+	}
+
+	public Long getYesterday_last() {
+		return yesterday_last;
+	}
+
+	public void setYesterday_last(Long yesterday_last) {
+		this.yesterday_last = yesterday_last;
+	}
 
 	public Long getLast() {
 		return last;

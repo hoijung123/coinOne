@@ -8,7 +8,7 @@ public class Utils {
 		if(seconds == null || seconds.isEmpty() || seconds.equals("null")){
 			return "";
 		}
-		seconds = new Long(new Long(seconds).longValue() /1000).toString();
+		seconds = new Long(new Long(seconds).longValue() /1).toString();
 		if(format == null || format.isEmpty()) format = "yyyy-MM-dd HH:mm:ss";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.format(new Date(Long.valueOf(seconds+"000")));

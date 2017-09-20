@@ -28,10 +28,9 @@ public class TickerDAOImpl implements TickerDAO {
 		return null;
 	}
 
-	public List<TickerDtlVO> getList() {
-		// TODO Auto-generated method stub
-		sqlSession.selectList(namespace + ".getList");
-		return null;
+	public List<TickerDtlVO> getList(TickerDtlVO vo) {
+		// TODO Auto-generated method stub		
+		return sqlSession.selectList(namespace + ".getList", vo);
 	}
 
 }
