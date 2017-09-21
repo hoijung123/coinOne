@@ -31,17 +31,17 @@ public class TickerProcessor implements ItemProcessor<String, String> {
 
 	@Override
 	public String process(String item) throws Exception {
-		this.getTickerAll();
+		this.registerCoinTickerAll();
 		return item;
 	}
 
-	public String getTickerAll() throws Exception {
+	public String registerCoinTickerAll() throws Exception {
 		SendMail sendMail = new SendMail();
 		CallAPIService api = new CallAPIService();
 
 		TickerVO tickerVO = api.getTickerAll();
 
-		Class c = Class.forName("coinone.tran.vo.TickerVO");
+		Class<?> c = Class.forName("coinone.tran.vo.TickerVO");
 
 		List<String> methodList = new ArrayList<String>(
 				Arrays.asList("getBtc", "getEth", "getEtc", "getXrp", "getBch", "getQtum"));
@@ -53,7 +53,7 @@ public class TickerProcessor implements ItemProcessor<String, String> {
 			tickerDAO.register(dtlVO);
 		}
 
-		logger.info("getTickerAll --> ");
+		logger.info("getCoinTickerAll --> ");
 		return "item";
 	}
 

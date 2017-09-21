@@ -15,8 +15,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 
 public class TranScheduler {
-	@Scheduled(fixedRate = 1000 * 10)
-	public void tranLimitSellJob() throws JobExecutionAlreadyRunningException, JobRestartException,
+	@Scheduled(fixedRate = 1000 * 20)
+	public void tickerJob() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 
 		String[] springConfig = { "spring/batch/jobs/ticker_job.xml" };

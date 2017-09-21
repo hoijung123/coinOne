@@ -22,8 +22,7 @@ path {
 </style>
 <script src="/coinone/resources/js/jquery-3.2.1.js"></script>
 <script>
-	function change(currency)
-	{
+	function change(currency) {
 		var loc = "lineChart?currency=" + currency;
 		location.href = loc;
 	}
@@ -35,6 +34,7 @@ path {
 			<c:if test="${currency eq 'bch'}" >selected</c:if> >bch</option>
 		<option value="btc" <c:if test="${currency eq 'btc'}" >selected</c:if> >btc</option>		
 		<option value="eth" <c:if test="${currency eq 'eth'}" >selected</c:if> >eth</option>
+		<option value="eth_krw" <c:if test="${currency eq 'eth_krw'}" >selected</c:if> >eth_krw</option>
 		<option value="etc" <c:if test="${currency eq 'etc'}" >selected</c:if> >etc</option>
 		<option value="xrp" <c:if test="${currency eq 'xrp'}" >selected</c:if> >xrp</option>		
 		<option value="qtum" <c:if test="${currency eq 'qtum'}" >selected</c:if> >qtum</option>
@@ -82,7 +82,12 @@ var svg = d3.select("body")
         .attr("transform", 
               "translate(" + margin.left + "," + margin.top + ")");
 
-var url = document.location.protocol+"//"+document.location.host +"/coinone/jsonTickerList?currency=${currency}";
+var app = "coinone"; 
+if ("eth_krw" == "${currency}")
+{
+		app = "korbit"; 
+} 
+var url = document.location.protocol+"//"+document.location.host +"/" + app +"/jsonTickerList?currency=${currency}";
 	
 // Get the data
 d3.json(url, function (error, json) {	
@@ -147,8 +152,14 @@ function updateData() {
 	});
 }
 
+
 function updateLast() {
-	var url = document.location.protocol+"//"+document.location.host +"/coinone/jsonTicker"; 
+	var app = "coinone"; 
+	if ("eth_krw" == "${currency}")
+	{
+		app = "korbit"; 
+	} 
+	var url = document.location.protocol+"//"+document.location.host +"/"+ app +"/jsonTicker"; 
     var params="currency=${currency}";  
   
     $.ajax({      
@@ -186,6 +197,7 @@ function comma(num){
  
 }
 
+updateLast();
 </script>
 </body>
 

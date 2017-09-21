@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -73,11 +74,12 @@ public class HomeController {
 		}
 		TickerDtlVO vo = new TickerDtlVO();
 		vo.setCurrency(currency);
-		return tickerDAO.getLastestTicker(vo);
+		vo = tickerDAO.getLastestTicker(vo);
+		return vo;
 	}	
 
 	@RequestMapping(value = "/lineChart", method = RequestMethod.GET)
-	public String lineChart(@RequestParam Map<String, String> params, Model model) {
+	public String lineChart(@RequestParam Map<String, String> params, Model model)  throws ParseException {
 		String currency = params.get("currency");
 		if (StringUtils.isEmpty(currency)) {
 			currency = Constants.ETH_KRW;
@@ -85,8 +87,13 @@ public class HomeController {
 		TickerDtlVO vo = new TickerDtlVO();
 		vo.setCurrency(currency);
 		model.addAttribute("currency", currency);
-		model.addAttribute("last", tickerDAO.getLastestTicker(vo).getLast());
-
+		vo = tickerDAO.getLastestTicker(vo);
+		Long last = null;
+		if (null != vo)
+		{
+			last = vo.getLast();
+		}
+		model.addAttribute("last", last);
 		return "lineChart";
 	}
 
