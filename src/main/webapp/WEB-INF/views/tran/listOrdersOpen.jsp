@@ -10,7 +10,7 @@
 </head>
 <script type="text/javascript">
 	function change(currency_pair) {
-		location.href = "listOrdersOpen?currency_pair=" + currency_pair;
+		location.href = "listLimitOrders?currency=" + currency_pair;
 	}
 	
 	function cancelOrder(currency, orderId, qty, price, type) {
@@ -23,26 +23,36 @@
 	}
 
     function registerOrderReq() {
+        if ("" == qty.value)
+        {
+            qty.focus();
+            return;
+        }
+        if ("" == reqCnt.value)
+        {
+            reqCnt.focus();
+            return;
+        }
 	    if (!confirm("Order를 생성하시겠습니까?"))
 		{
 		    return;
 		}
-        //var loc = "registerOrderReq?currency=" + currency + "&qty=" + qty + "&reqCnt=" + reqCnt;
-        //location.href = loc;
+        var loc = "registerOrderReq?currency=" + currency.value + "&qty=" + qty.value + "&reqCnt=" + reqCnt.value;
+        location.href = loc;
     }
 </script>
 
 
 <body>
 	<h1>OrdersOpen</h1>
-	<select name="currency_pair" id="currency_pair"
+	<select name="currency" id="currency"
 		onchange="change(this.value);">
-		<option value="eth_krw"
-			<c:if test="${currency_pair eq 'eth_krw'}">selected</c:if> >eth_krw</option>
-		<option value="etc_krw" <c:if test="${currency_pair eq 'etc_krw'}">selected</c:if> >etc_krw</option>
+		<option value="xrp"
+			<c:if test="${currency eq 'xrp'}">selected</c:if> >xrp</option>
+		<option value="etc_krw" <c:if test="${currency eq 'etc_krw'}">selected</c:if> >etc_krw</option>
 	</select> <br>
-	<input type="number" name="qty">
-	<input type="number" nam="reqCnt">
+	qty : <input type="number" size=5 name="qty" id="qty">
+	reqCnt : <input type="number" size= 2 name="reqCnt" id="reqCnt">
 	<input type="button" value="Order생성" onclick="registerOrderReq()">
 
 	<table border="1">
