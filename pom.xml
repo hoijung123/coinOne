@@ -313,7 +313,7 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
-					<url>http://35.201.160.244/manager/text</url>
+					<url>http://35.194.242.26/manager/text</url>
 					<path>/coinone</path>
 					<username>tomcat</username>
 					<password>tomcat</password>
