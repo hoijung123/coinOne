@@ -26,26 +26,13 @@
 
     <!-- /* select dual */ -->
     <select id="getTranConfigList" resultType="coinone.tran.vo.TranConfigVO">
-        SELECT `t_order`.`currency`,
-        `t_order`.`type`,
-        `t_order`.`seq`,
-        `t_order`.`price`,
-        `t_order`.`qty`,
-        `t_order`.`buy_date`,
-        `t_order`.`order_id`,
-        `t_order`.`result`,
-        `t_order`.`error_code`
-        FROM `coinone`.`t_order`
-        where
-        1=1
-        <if test="currency != null">
-            AND currency =
-            #{currency}
-        </if>
-        <if test="type != null">
-            AND type =
-            #{type}
-        </if>
+    SELECT `t_tran_config`.`currency`,
+    `t_tran_config`.`tran_type`,
+    `t_tran_config`.`target_price`,
+    `t_tran_config`.`status`,
+    `t_tran_config`.`tran_yn`,
+    `t_tran_config`.`units`
+FROM `coinone`.`t_tran_config`
     </select>
 
     <select id="getTranConfig" resultType="coinone.tran.vo.TranConfigVO">

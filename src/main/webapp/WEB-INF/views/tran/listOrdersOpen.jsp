@@ -49,7 +49,8 @@
 		onchange="change(this.value);">
 		<option value="xrp"
 			<c:if test="${currency eq 'xrp'}">selected</c:if> >xrp</option>
-		<option value="etc_krw" <c:if test="${currency eq 'etc_krw'}">selected</c:if> >etc_krw</option>
+		<option value="bch"
+				<c:if test="${currency eq 'bch'}">selected</c:if> >bch</option>
 	</select> <br>
 	qty : <input type="number" size=5 name="qty" id="qty">
 	reqCnt : <input type="number" size= 2 name="reqCnt" id="reqCnt">

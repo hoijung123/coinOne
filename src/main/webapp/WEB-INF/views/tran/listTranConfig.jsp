@@ -44,16 +44,7 @@
 
 
 <body>
-	<h1>OrdersOpen</h1>
-	<select name="currency" id="currency"
-		onchange="change(this.value);">
-		<option value="xrp"
-			<c:if test="${currency eq 'xrp'}">selected</c:if> >xrp</option>
-		<option value="etc_krw" <c:if test="${currency eq 'etc_krw'}">selected</c:if> >etc_krw</option>
-	</select> <br>
-	qty : <input type="number" size=5 name="qty" id="qty">
-	reqCnt : <input type="number" size= 2 name="reqCnt" id="reqCnt">
-	<input type="button" value="Order생성" onclick="registerOrderReq()">
+	<h1>TranConfig</h1>
 
 	<table border="1">
 		<tr>
@@ -61,25 +52,23 @@
 			<td width="50">type</td>
 			<td width="50">seq</td>
 			<td width="100">price</td>
-			<td width="100">qty</td>
-			<td width="50">buy_date</td>
+			<td width="50">tran_yn</td>
 			<td width="50">order_id</td>
-			<td width="50">취소</td>
-			<c:forEach var="sub" items="${ordersOpenList}">
+			<td width="50">저장</td>
+			<c:forEach var="sub" items="${tranConfigVOList}">
 				<tr>
-					<td>${sub.orderId}</td>
-					<td><fmt:formatNumber value="${sub.price}"
-							pattern="###" /></td>
-					<td>${sub.price}</td>
-					<td align="right"><fmt:formatNumber value="${sub.price}"
-							pattern="###,###" /></td>
+					<td>${sub.currency}</td>
+					<td></td>
+					<td>${sub.currency}</td>
 					<td>${sub.dateTime}</td>
-					<td>${sub.dateTime}</td>
-					<td>${sub.type}</td>
-					<td><a href="javascript:cancelOrder('${currency}','${sub.orderId}','${sub.qty}','${sub.price}','${sub.type}');">${sub.index}</a></td>
+					<td>${sub.tran_yn}</td>
+					<td>${sub.currency}</td>
+					<td><a href="javascript:cancelOrder('${currency}');">${sub.currency}</a></td>
 				</tr>
 			</c:forEach>
 	</table>
+
+	<input type="button" value="Order생성" onclick="registerOrderReq()">
 
 </body>
 

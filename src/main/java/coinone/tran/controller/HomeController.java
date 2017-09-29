@@ -170,8 +170,8 @@ public class HomeController {
 		CallAPIService api = new CallAPIService();
 
 		OrderVO vo = new OrderVO();
-		vo.setCurrency(Constants.COIN_XRP);
-		vo.setPrice((long) api.getTicker(Constants.COIN_XRP).getLast());
+		vo.setCurrency(sCurrency);
+		vo.setPrice((long) api.getTicker(sCurrency).getLast());
 		vo.setQty(new Double(qty));
 		vo.setReqCnt(new Integer(reqCnt));
 

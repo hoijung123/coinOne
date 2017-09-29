@@ -1,6 +1,6 @@
 package coinone.tran.vo;
 
-public class TranConfigVO {
+public class TranConfigVO extends  BaseVO{
 
 	String currency = "";
 	String date = "";
