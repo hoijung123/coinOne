@@ -78,10 +78,19 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 			{
 				OrderVO buyVO = new OrderVO();
 				buyVO.setCurrency(sub.getCurrency());
+				buyVO.setOrderId(sub.getOrderId());
 				buyVO.setType(Constants.TRAN_BUY);
 				buyVO.setSeq(sub.getSeq());
 				buyVO.setResult("N");
 				orderDao.updateOrder(buyVO);
+
+				OrderVO sellVO = new OrderVO();
+				sellVO.setCurrency(sub.getCurrency());
+				sellVO.setOrderId(sub.getOrderId());
+				sellVO.setType(Constants.TRAN_SELL);
+				sellVO.setSeq(sub.getSeq());
+				sellVO.setResult("Y");
+				orderDao.updateOrder(sellVO);
 
 				sendMail.sendMail("CoinOne Sell Complete", sCurrency + "/" + " Sell " + "/" + " Unit:"
 						+ sub.getQty() + "/" + " Price:" + sub.getPrice());
@@ -104,10 +113,19 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 			{
 				OrderVO sellVO = new OrderVO();
 				sellVO.setCurrency(sub.getCurrency());
+				sellVO.setOrderId(sub.getOrderId());
 				sellVO.setType(Constants.TRAN_SELL);
 				sellVO.setSeq(sub.getSeq());
 				sellVO.setResult("N");
 				orderDao.updateOrder(sellVO);
+
+				OrderVO buyVO = new OrderVO();
+				buyVO.setCurrency(sub.getCurrency());
+				buyVO.setOrderId(sub.getOrderId());
+				buyVO.setType(Constants.TRAN_BUY);
+				buyVO.setSeq(sub.getSeq());
+				buyVO.setResult("Y");
+				orderDao.updateOrder(buyVO);
 //
 				sendMail.sendMail("CoinOne Buy Complete", sCurrency + "/" + " Buy " + "/" + " Unit:"
 						+ sub.getQty() + "/" + " Price:" + sub.getPrice());

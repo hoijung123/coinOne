@@ -66,7 +66,7 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 		BalanceVO balanceVO = null;
 
 		balanceVO = api.getBalance(Constants.COIN_XRP);
-		float avail = balanceVO.getXrp().getAvail();
+		Double avail = balanceVO.getXrp().getAvail();
 
 		boolean isSell = false;
 
@@ -81,7 +81,7 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 				}
 
 				if (avail < (sub.getQty())) {
-					sub.setQty((double) avail);
+					sub.setQty(avail);
 				}
 
 					if ("N".equals(sub.getResult())) {

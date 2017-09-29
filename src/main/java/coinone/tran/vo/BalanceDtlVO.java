@@ -1,20 +1,20 @@
 package coinone.tran.vo;
 
 public class BalanceDtlVO extends BaseVO {
-	public Float getAvail() {
+	public Double getAvail() {
 		return avail;
 	}
-	public void setAvail(Float avail) {
+	public void setAvail(Double avail) {
 		this.avail = avail;
 	}
-	public Float getBalance() {
+	public Double getBalance() {
 		return balance;
 	}
-	public void setBalance(Float balance) {
+	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
-	Float avail = null;
-	Float balance = null;
+	Double avail = null;
+	Double balance = null;
 	
 
 }

@@ -64,7 +64,7 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
         BalanceVO balanceVO = null;
 
         balanceVO = api.getBalance(Constants.COIN_KRW);
-        float krwAvail = balanceVO.getKrw().getAvail();
+        Double krwAvail = balanceVO.getKrw().getAvail();
 
         boolean isBuy = false;
         try {
