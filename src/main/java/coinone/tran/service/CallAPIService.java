@@ -25,7 +25,7 @@ public class CallAPIService {
 		Map<String, String> apikey = new HashMap<>();
 		apikey.put("access_token", Constants.ACCESS_TOKEN);
 		apikey.put("secret", Constants.SECRET);
-		apikey.put("nonce", String.valueOf(new Date().getTime())); //
+		apikey.put("nonce", String.valueOf(new Date().getTime())); ////
 		this.apikey = apikey;
 	}
 
