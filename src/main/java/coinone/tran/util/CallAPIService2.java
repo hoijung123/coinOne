@@ -1,5 +1,7 @@
-package coinone.tran.service;
+package coinone.tran.util;
 
+import coinone.tran.service.Encryptor;
+import coinone.tran.service.HTTPUtil;
 import coinone.tran.vo.*;
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonParseException;
@@ -9,28 +11,26 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import coinone.tran.util.Constants;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CallAPIService {
+public class CallAPIService2 {
 
-	private static final Logger logger = LoggerFactory.getLogger(CallAPIService.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(CallAPIService2.class);
+
 	private Map<String, String> apikey;
 
-	public CallAPIService() {
+	public CallAPIService2() {
 		Map<String, String> apikey = new HashMap<>();
 		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
 		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
 		apikey.put("nonce", String.valueOf(new Date().getTime())); //
 		this.apikey = apikey;
 	}
-	
-	public CallAPIService(Map<String, String> apikey) {
+
+	public CallAPIService2(Map<String, String> apikey) {
 		this.apikey = apikey;
 	}
 
