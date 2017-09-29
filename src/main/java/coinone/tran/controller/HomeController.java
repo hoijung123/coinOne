@@ -1,14 +1,14 @@
 package coinone.tran.controller;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.inject.Inject;
 
+import coinone.tran.dao.OrderDAO;
+import coinone.tran.service.CallAPIService;
+import coinone.tran.vo.LimitOrderVO;
+import coinone.tran.vo.OrderVO;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,9 @@ public class HomeController {
 	@Inject
 	private TickerDAO tickerDAO;
 
+	@Inject
+	private OrderDAO orderDAO;
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -54,20 +57,19 @@ public class HomeController {
 
 	@RequestMapping(value = "/jsonTickerList", method = RequestMethod.GET)
 	public @ResponseBody List<TickerDtlVO> jsonTickerList(@RequestParam Map<String, String> params) {
-		// VO°´Ã¼¿¡ SETÇÑÈÄ vo°´Ã¼ÀÚÃ¼¸¦ return
 		String currency = params.get("currency");
 		if (StringUtils.isEmpty(currency)) {
 			currency = Constants.ETH_KRW;
 		}
 		TickerDtlVO vo = new TickerDtlVO();
 		vo.setCurrency(currency);
-		List<TickerDtlVO> list = tickerDAO.getList(vo);
+		List<TickerDtlVO> list = tickerDAO.getDailyList(vo);
+
 		return list;
 	}
 	
 	@RequestMapping(value = "/jsonTicker", method = RequestMethod.GET)
 	public @ResponseBody TickerDtlVO jsonTicker(@RequestParam Map<String, String> params) {
-		// VO°´Ã¼¿¡ SETÇÑÈÄ vo°´Ã¼ÀÚÃ¼¸¦ return
 		String currency = params.get("currency");
 		if (StringUtils.isEmpty(currency)) {
 			currency = Constants.ETH_KRW;
@@ -97,4 +99,97 @@ public class HomeController {
 		return "lineChart";
 	}
 
+	/**
+	 * Simply selects the home view to render by returning its name.
+	 * @throws ParseException
+	 */
+	@RequestMapping(value = "/tran/listLimitOrders", method = RequestMethod.GET)
+	public String listLimitOrders(@RequestParam Map<String, String> params, Model model) throws Exception {
+		String currency = params.get("currency");
+
+		if (StringUtils.isEmpty(currency)) currency= Constants.COIN_XRP;
+
+		// Set your API Key
+		Map<String, String> apikey = new HashMap<>();
+		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
+		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
+		apikey.put("nonce", String.valueOf(new Date().getTime())); // if you get Exception, you should increase this
+		// value.
+
+		CallAPIService comm = new CallAPIService(apikey);
+		LimitOrderVO vo = comm.getLimitOrders(currency);
+		model.addAttribute("ordersOpenList", vo.getLimitOrders());
+
+		model.addAttribute("currency", currency);
+
+		OrderVO orderVO = new OrderVO();
+		orderDAO.getOrderList(orderVO);
+
+		return "tran/listOrdersOpen";
+	}
+
+	/**
+	 * Simply selects the home view to render by returning its name.
+	 * @throws ParseException
+	 */
+	@RequestMapping(value = "/tran/cancelOrder", method = RequestMethod.GET)
+	public String cancelOrder(@RequestParam Map<String, String> params, Model model) throws Exception {
+		String sCurrency = "";
+		sCurrency = params.get("currency");
+
+		String orderId = params.get("orderId");
+
+		if (StringUtils.isEmpty(sCurrency)) sCurrency= Constants.COIN_XRP;
+
+		// Set your API Key
+		Map<String, String> apikey = new HashMap<>();
+		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
+		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
+		apikey.put("nonce", String.valueOf(new Date().getTime())); // if you get Exception, you should increase this
+		CallAPIService api = new CallAPIService(apikey);
+
+		OrderVO orderVO = new OrderVO();
+		orderVO.setCurrency(sCurrency);
+		orderVO.setOrderId(orderId);
+		orderVO.setQty(1.0000);
+		orderVO.setPrice((long) 100);
+		orderVO.setType("bid");
+		api.cancelOrder(orderVO);
+
+		return "redirect:listLimitOrders?currency=" + sCurrency;
+	}
+
+	/**
+	 * Simply selects the home view to render by returning its name.
+	 * @throws ParseException
+	 */
+	@RequestMapping(value = "/tran/registerOrderReq", method = RequestMethod.GET)
+	public String registerOrderReq(@RequestParam Map<String, String> params, Model model) throws Exception {
+		String sCurrency = "";
+		sCurrency = params.get("currency");
+
+		String orderId = params.get("orderId");
+
+		if (StringUtils.isEmpty(sCurrency)) sCurrency= Constants.COIN_XRP;
+
+		// Set your API Key
+		Map<String, String> apikey = new HashMap<>();
+		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
+		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
+		apikey.put("nonce", String.valueOf(new Date().getTime())); // if you get Exception, you should increase this
+		CallAPIService api = new CallAPIService(apikey);
+
+		OrderVO vo = new OrderVO();
+		vo.setCurrency(Constants.COIN_XRP);
+		vo.setType(Constants.TRAN_BUY);
+		vo.setSeq(1);
+		vo.setPrice((long) api.getTicker(Constants.COIN_XRP).getLast());
+		vo.setQty((double) 2);
+
+		orderDAO.deleteOrder(vo);
+		orderDAO.registerBuyReq(vo);
+		orderDAO.registerSellReq(vo);
+
+		return "redirect:listLimitOrders?currency=" + sCurrency;
+	}
 }

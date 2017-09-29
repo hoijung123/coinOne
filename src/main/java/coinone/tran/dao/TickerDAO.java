@@ -15,4 +15,6 @@ public interface TickerDAO  {
 	
 	public TickerDtlVO getLastestTicker(TickerDtlVO vo);
 
+	public List<TickerDtlVO> getDailyList(TickerDtlVO vo);
+
 }

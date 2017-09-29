@@ -57,7 +57,7 @@ public class HTTPUtil {
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
-
+        System.out.println(response);
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }

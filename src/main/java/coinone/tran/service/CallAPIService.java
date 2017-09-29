@@ -1,8 +1,7 @@
 package coinone.tran.service;
 
+import coinone.tran.vo.*;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -11,14 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import coinone.tran.util.Constants;
-import coinone.tran.vo.BalanceVO;
-import coinone.tran.vo.OrderRetVO;
-import coinone.tran.vo.TickerDtlVO;
-import coinone.tran.vo.TickerVO;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +49,7 @@ public class CallAPIService {
 
 		return tickerVO;
 	}
-	/* ÃÖÁ¾ Ã¼°á °¡°Ý */
+	/* ï¿½ï¿½ï¿½ï¿½ Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 	public TickerDtlVO getTicker(String coin) throws Exception {
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -79,7 +72,7 @@ public class CallAPIService {
 		return tickerDtlVO;
 	}
 
-	/* Áö°©Á¶È¸ */
+	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¸ */
 	/*
 	 * HTTP/1.1 200 OK { "errorCode":"0", "normalWallets": [ { "balance":"6.1151",
 	 * "label":"First Wallet" }, { "balance":"6.9448", "label":"Second Wallet" } ],
@@ -133,6 +126,50 @@ public class CallAPIService {
 
 		return balanceVO;
 	}
+
+	public LimitOrderVO getLimitOrders(String coin) throws Exception {
+		String accessToken = apikey.get("access_token");
+		String secret = apikey.get("secret");
+		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
+		apikey.put("nonce", String.valueOf(nonce));
+
+		String url = Constants.API_URL + "v2/order/limit_orders/";
+
+		JSONObject params = new JSONObject();
+		params.put("nonce", nonce);
+		params.put("access_token", accessToken);
+		params.put("currency", coin);
+
+		String payload = Base64.encodeBase64String(params.toString().getBytes());
+		String signature = Encryptor.getHmacSha512(secret.toUpperCase(), payload).toLowerCase();
+
+		Map<String, String> map = new HashMap<>();
+		map.put("content-type", "application/json");
+		map.put("accept", "application/json");
+		map.put("X-COINONE-PAYLOAD", payload);
+		map.put("X-COINONE-SIGNATURE", signature);
+
+		String json = HTTPUtil.getJSONfromPost(url, map, payload);
+		System.out.println(json);
+		// String strBalance = (String) ((JSONObject) result.get(coin)).get("avail");
+
+		ObjectMapper mapper = new ObjectMapper();
+		LimitOrderVO vo = null;
+		try {
+			vo = mapper.readValue(json, LimitOrderVO.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return vo;
+	}
 	//
 	// public long getCompleteBalance() throws Exception {
 	// return (long) (getTicker(Constants.COIN_BTC) *
@@ -147,9 +184,8 @@ public class CallAPIService {
 	  "qty": 0.1,
 	  "currency": "btc",
 	  "nonce": Date.now()
-*/	  
-	/*ÁÖ¹®-¸Å¼ö*/
-	public OrderRetVO ordersLimitBuy(String currency, String qty, String price) throws Exception {
+*/
+	public OrderRetVO ordersLimitBuy(OrderVO vo) throws Exception {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
@@ -160,9 +196,9 @@ public class CallAPIService {
 		JSONObject params = new JSONObject();
 		params.put("nonce", nonce);
 		params.put("access_token", accessToken);
-		params.put("currency", currency);
-		params.put("price", price);
-		params.put("qty", qty);
+		params.put("currency", vo.getCurrency());
+		params.put("price", vo.getPrice());
+		params.put("qty", vo.getQty());
 
 		String payload = Base64.encodeBase64String(params.toString().getBytes());
 		String signature = Encryptor.getHmacSha512(secret.toUpperCase(), payload).toLowerCase();
@@ -192,8 +228,8 @@ public class CallAPIService {
 		return orderRetVO;
 	}
 	
-	/*ÁÖ¹®-¸Å¼ö*/
-	public OrderRetVO ordersLimitSell(String currency, String qty, String price) throws Exception {
+	/*ï¿½Ö¹ï¿½-ï¿½Å¼ï¿½*/
+	public OrderRetVO ordersLimitSell(OrderVO vo) throws Exception {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
@@ -204,9 +240,9 @@ public class CallAPIService {
 		JSONObject params = new JSONObject();
 		params.put("nonce", nonce);
 		params.put("access_token", accessToken);
-		params.put("currency", currency);
-		params.put("price", price);
-		params.put("qty", qty);
+		params.put("currency", vo.getCurrency());
+		params.put("price", vo.getPrice());
+		params.put("qty", vo.getQty());
 
 		String payload = Base64.encodeBase64String(params.toString().getBytes());
 		String signature = Encryptor.getHmacSha512(secret.toUpperCase(), payload).toLowerCase();
@@ -234,5 +270,55 @@ public class CallAPIService {
 			e.printStackTrace();
 		}
 		return orderRetVO;
-	}	
+	}
+
+	public BaseVO cancelOrder(OrderVO orderVO) throws Exception {
+		String accessToken = apikey.get("access_token");
+		String secret = apikey.get("secret");
+		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
+		apikey.put("nonce", String.valueOf(nonce));
+
+		String url = Constants.API_URL + "v2/order/cancel/";
+
+		JSONObject params = new JSONObject();
+		params.put("nonce", nonce);
+		params.put("access_token", accessToken);
+		params.put("order_id", orderVO.getOrderId());
+		params.put("currency", orderVO.getCurrency());
+		params.put("price", orderVO.getPrice());
+		params.put("qty", orderVO.getQty());
+		String isAsk = "1";
+		if ("bid".equals(orderVO.getType()))
+		{
+			isAsk = "0";
+		}
+		params.put("is_ask", isAsk);
+
+		String payload = Base64.encodeBase64String(params.toString().getBytes());
+		String signature = Encryptor.getHmacSha512(secret.toUpperCase(), payload).toLowerCase();
+
+		Map<String, String> map = new HashMap<>();
+		map.put("content-type", "application/json");
+		map.put("accept", "application/json");
+		map.put("X-COINONE-PAYLOAD", payload);
+		map.put("X-COINONE-SIGNATURE", signature);
+
+		String json = HTTPUtil.getJSONfromPost(url, map, payload);
+		System.out.println(json);
+		ObjectMapper mapper = new ObjectMapper();
+		BaseVO orderRetVO = null;
+		try {
+			orderRetVO = mapper.readValue(json, BaseVO.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return orderRetVO;
+	}
 }

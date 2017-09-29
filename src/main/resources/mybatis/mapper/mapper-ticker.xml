@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="coinone.tran.dao.DbMapper.Ticker">
-	<insert id="register">
+    <insert id="register">
 		INSERT INTO `coinone`.`t_ticker`
 		(`currency`,
 		`timestamp`,
@@ -20,25 +20,25 @@
 		#{volume})
 	</insert>
 
-	<!-- /* select dual */ -->
-	<select id="getList" resultType="coinone.tran.vo.TickerDtlVO">
-		SELECT `t_ticker`.`currency`,
-		`t_ticker`.`timestamp`,
-		`t_ticker`.`high`,
-		`t_ticker`.`low`,
-		`t_ticker`.`last`,
-		`t_ticker`.`first`,
-		`t_ticker`.`volume`
-		FROM `coinone`.`t_ticker`
-		where
-		1=1
-		<if test="currency != null">
-			AND currency =
-			#{currency}
-		</if>
-	</select>
+    <!-- /* select dual */ -->
+    <select id="getList" resultType="coinone.tran.vo.TickerDtlVO">
+        SELECT `t_ticker`.`currency`,
+        `t_ticker`.`timestamp`,
+        `t_ticker`.`high`,
+        `t_ticker`.`low`,
+        `t_ticker`.`last`,
+        `t_ticker`.`first`,
+        `t_ticker`.`volume`
+        FROM `coinone`.`t_ticker`
+        where
+        1=1
+        <if test="currency != null">
+            AND currency =
+            #{currency}
+        </if>
+    </select>
 
-	<select id="get" resultType="coinone.tran.vo.TickerDtlVO">
+    <select id="get" resultType="coinone.tran.vo.TickerDtlVO">
 		SELECT `t_ticker`.`currency`,
 		`t_ticker`.`timestamp`,
 		`t_ticker`.`high`,
@@ -54,7 +54,7 @@
 	</select>
 
 
-	<select id="getLastestTicker" resultType="coinone.tran.vo.TickerDtlVO">
+    <select id="getLastestTicker" resultType="coinone.tran.vo.TickerDtlVO">
 		SELECT
 		`t_ticker`.`currency`,
 		`t_ticker`.`timestamp`,
@@ -69,4 +69,25 @@
 		in (select currency, max(timestamp) from t_ticker where currency =
 		#{currency} )
 	</select>
+
+    <!-- /* select dual */ -->
+    <select id="getDailyList" resultType="coinone.tran.vo.TickerDtlVO">
+        SELECT
+        `t_ticker`.`currency`,
+        concat(substr(concat(timestamp), 1,7), '000') as timestamp ,
+        max(`t_ticker`.`high`) as high,
+        max(`t_ticker`.`low`) as low,
+        max(`t_ticker`.`last`) as last,
+        max(`t_ticker`.`first`) as first,
+        max(`t_ticker`.`volume`) as volume
+        FROM `coinone`.`t_ticker`
+        where
+        1=1
+        <if test="currency != null">
+            AND currency =
+            #{currency}
+        </if>
+
+        GROUP BY currency, concat(substr(concat(timestamp), 1,7), '000')
+    </select>
 </mapper>
