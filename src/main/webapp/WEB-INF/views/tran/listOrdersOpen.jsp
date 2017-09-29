@@ -27,8 +27,8 @@
 		{
 		    return;
 		}
-        var loc = "registerOrderReq";
-        location.href = loc;
+        //var loc = "registerOrderReq?currency=" + currency + "&qty=" + qty + "&reqCnt=" + reqCnt;
+        //location.href = loc;
     }
 </script>
 
@@ -40,7 +40,10 @@
 		<option value="eth_krw"
 			<c:if test="${currency_pair eq 'eth_krw'}">selected</c:if> >eth_krw</option>
 		<option value="etc_krw" <c:if test="${currency_pair eq 'etc_krw'}">selected</c:if> >etc_krw</option>
-	</select> <input type="button" value="Order생성" onclick="registerOrderReq()">
+	</select> <br>
+	<input type="number" name="qty">
+	<input type="number" nam="reqCnt">
+	<input type="button" value="Order생성" onclick="registerOrderReq()">
 
 	<table border="1">
 		<tr>

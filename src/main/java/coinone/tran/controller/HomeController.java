@@ -157,8 +157,8 @@ public class HomeController {
 	public String registerOrderReq(@RequestParam Map<String, String> params, Model model) throws Exception {
 		String sCurrency = "";
 		sCurrency = params.get("currency");
-
-		String orderId = params.get("orderId");
+		String qty = params.get("qty");
+		String reqCnt = params.get("reqCnt");
 
 		if (StringUtils.isEmpty(sCurrency)) sCurrency= Constants.COIN_XRP;
 
@@ -166,11 +166,9 @@ public class HomeController {
 
 		OrderVO vo = new OrderVO();
 		vo.setCurrency(Constants.COIN_XRP);
-		vo.setType(Constants.TRAN_BUY);
-		vo.setSeq(1);
 		vo.setPrice((long) api.getTicker(Constants.COIN_XRP).getLast());
-		vo.setQty((double) 2);
-		vo.setReqCnt(2);
+		vo.setQty(new Double(qty));
+		vo.setReqCnt(new Integer(reqCnt));
 
 		orderDAO.deleteOrder(vo);
 		orderDAO.registerBuyReq(vo);

@@ -52,6 +52,7 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
         OrderVO ordersBuyVO = new OrderVO();
         ordersBuyVO.setCurrency(sCurrency);
         ordersBuyVO.setType(Constants.TRAN_BUY);
+        ordersBuyVO.setResult("N");
         List<OrderVO> listOrdersBuyVo = orderDao.getOrderList(ordersBuyVO);
 
         TranConfigVO vo = new TranConfigVO();

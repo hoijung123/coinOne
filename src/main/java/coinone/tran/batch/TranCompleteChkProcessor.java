@@ -38,6 +38,7 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 		OrderVO orderVO = new OrderVO();
 		orderVO.setCurrency(sCurrency);
 		orderVO.setType(Constants.TRAN_SELL);
+		orderVO.setResult(Constants.SUCCESS);
 		List<OrderVO> ordersSellList = orderDao.getOrderList(orderVO);
 
 		TranConfigVO vo = new TranConfigVO();
@@ -50,6 +51,7 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 		OrderVO ordersBuyVO = new OrderVO();
 		ordersBuyVO.setType(Constants.TRAN_BUY);
 		ordersBuyVO.setCurrency(sCurrency);
+		ordersBuyVO.setResult(Constants.SUCCESS);
 		List<OrderVO> ordersBuyList = orderDao.getOrderList(ordersBuyVO);
 		BalanceVO balanceVO = null;
 
@@ -73,8 +75,8 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 				buyVO.setSeq(sub.getSeq());
 				buyVO.setResult("N");
 				orderDao.updateOrder(buyVO);
-				
-				sendMail.sendMail("Korbit Sell Complete", sCurrency + "/" + " Sell " + "/" + " Unit:"
+
+				sendMail.sendMail("CoinOne Sell Complete", sCurrency + "/" + " Sell " + "/" + " Unit:"
 						+ sub.getQty() + "/" + " Price:" + sub.getPrice());
 			}
 		}
@@ -96,8 +98,8 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 				sellVO.setSeq(sub.getSeq());
 				sellVO.setResult("N");
 				orderDao.updateOrder(sellVO);
-
-				sendMail.sendMail("Korbit Buy Complete", sCurrency + "/" + " Buy " + "/" + " Unit:"
+//
+				sendMail.sendMail("CoinOne Buy Complete", sCurrency + "/" + " Buy " + "/" + " Unit:"
 						+ sub.getQty() + "/" + " Price:" + sub.getPrice());
 			}
 		}
