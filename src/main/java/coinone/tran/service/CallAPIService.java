@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import coinone.tran.util.Constants;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,11 @@ public class CallAPIService {
 	private Map<String, String> apikey;
 
 	public CallAPIService() {
+		Map<String, String> apikey = new HashMap<>();
+		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
+		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
+		apikey.put("nonce", String.valueOf(new Date().getTime())); //
+		this.apikey = apikey;
 	}
 	
 	public CallAPIService(Map<String, String> apikey) {

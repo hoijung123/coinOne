@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <meta charset="utf-8">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -28,7 +29,7 @@ path {
 	}
 </script>
 <body>
-
+ddd
 	<select name="currency" id="currency" onchange="change(this.value);">
 		<option value="bch"
 			<c:if test="${currency eq 'bch'}" >selected</c:if> >bch</option>

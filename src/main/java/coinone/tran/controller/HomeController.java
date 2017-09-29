@@ -67,7 +67,7 @@ public class HomeController {
 
 		return list;
 	}
-	
+
 	@RequestMapping(value = "/jsonTicker", method = RequestMethod.GET)
 	public @ResponseBody TickerDtlVO jsonTicker(@RequestParam Map<String, String> params) {
 		String currency = params.get("currency");
@@ -78,7 +78,7 @@ public class HomeController {
 		vo.setCurrency(currency);
 		vo = tickerDAO.getLastestTicker(vo);
 		return vo;
-	}	
+	}
 
 	@RequestMapping(value = "/lineChart", method = RequestMethod.GET)
 	public String lineChart(@RequestParam Map<String, String> params, Model model)  throws ParseException {
@@ -109,14 +109,7 @@ public class HomeController {
 
 		if (StringUtils.isEmpty(currency)) currency= Constants.COIN_XRP;
 
-		// Set your API Key
-		Map<String, String> apikey = new HashMap<>();
-		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
-		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
-		apikey.put("nonce", String.valueOf(new Date().getTime())); // if you get Exception, you should increase this
-		// value.
-
-		CallAPIService comm = new CallAPIService(apikey);
+		CallAPIService comm = new CallAPIService();
 		LimitOrderVO vo = comm.getLimitOrders(currency);
 		model.addAttribute("ordersOpenList", vo.getLimitOrders());
 
@@ -136,24 +129,21 @@ public class HomeController {
 	public String cancelOrder(@RequestParam Map<String, String> params, Model model) throws Exception {
 		String sCurrency = "";
 		sCurrency = params.get("currency");
-
 		String orderId = params.get("orderId");
+		String qty = params.get("qty");
+		String price = params.get("price");
+		String type = params.get("type");
 
 		if (StringUtils.isEmpty(sCurrency)) sCurrency= Constants.COIN_XRP;
 
-		// Set your API Key
-		Map<String, String> apikey = new HashMap<>();
-		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
-		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
-		apikey.put("nonce", String.valueOf(new Date().getTime())); // if you get Exception, you should increase this
-		CallAPIService api = new CallAPIService(apikey);
+		CallAPIService api = new CallAPIService();
 
 		OrderVO orderVO = new OrderVO();
 		orderVO.setCurrency(sCurrency);
 		orderVO.setOrderId(orderId);
-		orderVO.setQty(1.0000);
-		orderVO.setPrice((long) 100);
-		orderVO.setType("bid");
+		orderVO.setQty(Double.valueOf(qty));
+		orderVO.setPrice(new Long(price));
+		orderVO.setType(type);
 		api.cancelOrder(orderVO);
 
 		return "redirect:listLimitOrders?currency=" + sCurrency;
@@ -172,12 +162,7 @@ public class HomeController {
 
 		if (StringUtils.isEmpty(sCurrency)) sCurrency= Constants.COIN_XRP;
 
-		// Set your API Key
-		Map<String, String> apikey = new HashMap<>();
-		apikey.put("access_token", "d611b917-f27f-4ef2-b5e7-5c64317fa05a");
-		apikey.put("secret", "5abef40a-3c4d-4d07-ae60-7c13fb692f66");
-		apikey.put("nonce", String.valueOf(new Date().getTime())); // if you get Exception, you should increase this
-		CallAPIService api = new CallAPIService(apikey);
+		CallAPIService api = new CallAPIService();
 
 		OrderVO vo = new OrderVO();
 		vo.setCurrency(Constants.COIN_XRP);
@@ -185,6 +170,7 @@ public class HomeController {
 		vo.setSeq(1);
 		vo.setPrice((long) api.getTicker(Constants.COIN_XRP).getLast());
 		vo.setQty((double) 2);
+		vo.setReqCnt(2);
 
 		orderDAO.deleteOrder(vo);
 		orderDAO.registerBuyReq(vo);

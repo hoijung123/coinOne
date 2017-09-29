@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="coinone.tran.dao.DbMapper.Order">
+    <insert id="registerOrder">
+        INSERT INTO `coinone`.`t_order`
+        (`currency`,
+        `type`,
+        `seq`,
+        `price`,
+        `qty`,
+        `buy_date`,
+        `order_id`,
+        `result`,
+        `error_code`)
+        VALUES
+        (#{currency},
+        #{type},
+        #{seq},
+        #{price},
+        #{qty},
+        now(),
+        #{orderId},
+        #{result},
+        #{errorCode})
+    </insert>
+
+    <!-- /* select dual */ -->
+    <select id="getOrderList" resultType="coinone.tran.vo.OrderVO">
+        SELECT `t_order`.`currency`,
+        `t_order`.`type`,
+        `t_order`.`seq`,
+        `t_order`.`price`,
+        `t_order`.`qty`,
+        `t_order`.`buy_date`,
+        `t_order`.`order_id`,
+        `t_order`.`result`,
+        `t_order`.`error_code`
+        FROM `coinone`.`t_order`
+        where
+        result = 'N'
+        <if test="currency != null">
+            AND currency =
+            #{currency}
+        </if>
+        <if test="type != null">
+            AND type =
+            #{type}
+        </if>
+        order by seq
+        limit 1
+    </select>
+
+    <select id="getOrder" resultType="coinone.tran.vo.OrderVO">
+    SELECT `t_order`.`currency`,
+        `t_order`.`type`,
+        `t_order`.`seq`,
+        `t_order`.`price`,
+        `t_order`.`qty`,
+        `t_order`.`buy_date`,
+        `t_order`.`order_id`,
+        `t_order`.`result`,
+        `t_order`.`error_code`
+    FROM `coinone`.`t_order`
+            where currency = #{currency}
+            and type =
+            #{type}
+             and seq =
+            #{seq}
+	</select>
+
+    <delete id="deleteOrder">
+      delete from t_order where currency = #{currency}
+    </delete>
+
+    <insert id="registerBuyReq">
+insert into t_order
+(currency, type, seq, price, qty, result)
+SELECT
+    currency,
+    'bid' as type,
+    seq,
+    price - seq as price,
+    qty,
+    result
+FROM
+    (SELECT
+        #{currency} AS `currency`,
+            @RNUM:=@RNUM + 1 AS seq,
+            truncate( (#{price} - (#{price}*0.001)),0) AS `price`,
+            #{qty} AS `qty`,
+            NOW() AS `buy_date`,
+            NULL `order_id`,
+            'N' `result`
+    FROM
+        (SELECT
+        currency
+    FROM
+        t_ticker
+    ORDER BY timestamp ASC) a, (SELECT @RNUM:=0) b
+    LIMIT #{reqCnt}) t
+    </insert>
+
+    <insert id="registerSellReq">
+insert into t_order
+(currency, type, seq, price, qty, result)
+SELECT
+    currency,
+    'ask' as type,
+    seq,
+    price + seq + 1 as price,
+    qty,
+    result
+FROM
+    (SELECT
+        #{currency} AS `currency`,
+            @RNUM:=@RNUM + 1 AS seq,
+            truncate( (#{price} + (#{price}*0.001)),0) AS `price`,
+            #{qty} AS `qty`,
+            NOW() AS `buy_date`,
+            NULL `order_id`,
+            'Y' `result`
+    FROM
+        (SELECT
+        currency
+    FROM
+        t_ticker
+    ORDER BY timestamp ASC) a, (SELECT @RNUM:=0) b
+    LIMIT #{reqCnt}) t
+    </insert>
+
+
+    <update id="updateOrder">
+        UPDATE t_order
+        SET
+        <if test="price != null">
+            price = #{price},
+        </if>
+        <if test="qty != null">
+            qty = #{qty},
+        </if>
+        <if test='buyDate != null and  buyDate != ""'>
+            buy_date = #{buyDate},
+        </if>
+        <if test="orderId != null">
+            order_id = #{orderId},
+        </if>
+        <if test="result != null">
+            result = #{result},
+        </if>
+        <if test="errorCode != null">
+            error_code = #{errorCode},
+        </if>
+        currency = #{currency}
+        WHERE `currency` = #{currency} AND `type` =
+        #{type} and seq = #{seq}
+    </update>
+
+</mapper>

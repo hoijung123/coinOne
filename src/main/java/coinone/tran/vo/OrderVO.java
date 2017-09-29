@@ -48,7 +48,17 @@ public class OrderVO extends BaseVO {
 	String buyDate = "";
 	String orderId = "";
 	String result = "";
+
+	public Integer getReqCnt() {
+		return reqCnt;
+	}
+
+	public void setReqCnt(Integer reqCnt) {
+		this.reqCnt = reqCnt;
+	}
+
 	String errorCode = "";
+	Integer reqCnt = null;
 
 	public Float getFeeRate() {
 		return feeRate;

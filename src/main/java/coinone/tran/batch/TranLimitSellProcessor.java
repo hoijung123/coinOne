@@ -1,16 +1,17 @@
 package coinone.tran.batch;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import coinone.tran.dao.OrdersBuyDAO;
-import coinone.tran.dao.OrdersSellDAO;
+import coinone.tran.dao.OrderDAO;
 import coinone.tran.dao.TranConfigDAO;
 import coinone.tran.service.CallAPIService;
 import coinone.tran.util.Constants;
@@ -18,7 +19,7 @@ import coinone.tran.util.SendMail;
 import coinone.tran.vo.BalanceVO;
 import coinone.tran.vo.OrderRetVO;
 import coinone.tran.vo.OrdersBuyVO;
-import coinone.tran.vo.OrdersSellVO;
+import coinone.tran.vo.OrderVO;
 import coinone.tran.vo.TickerVO;
 import coinone.tran.vo.TranConfigVO;
 
@@ -30,13 +31,11 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 	@Inject
 	private TranConfigDAO tranConfigDAO;
 	@Inject
-	private OrdersSellDAO ordersSellDao;
-	@Inject
-	private OrdersBuyDAO ordersBuyDao;
+	private OrderDAO orderDao;
 
 	@Override
 	public String process(String item) throws Exception {
-		CallAPIService api = new CallAPIService();
+		this.tranCoin(Constants.COIN_XRP);
 //		if (api.getOrdersOpen(Constants.ETH_KRW).size() < 10) {
 //			this.tranCoin(Constants.ETH_KRW);
 //			Thread.sleep(SLEEP_TIME);
@@ -48,46 +47,30 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 		return item;
 	}
 
-	public String tranCoin(String sCurrency_pair) {
+	public String tranCoin(String sCurrency) throws Exception {
 		SendMail sendMail = new SendMail();
 		CallAPIService api = new CallAPIService();
 
-		OrdersSellVO ordersSellVO = new OrdersSellVO();
-		ordersSellVO.setCurrency_pair(sCurrency_pair);
-		List<OrdersSellVO> listOrdersSellVo = ordersSellDao.getOrdersSellList(ordersSellVO);
+		OrderVO ordersBuyVO = new OrderVO();
+		ordersBuyVO.setCurrency(sCurrency);
+		ordersBuyVO.setType(Constants.TRAN_SELL);
+		List<OrderVO> listOrdersSellVo = orderDao.getOrderList(ordersBuyVO);
 
-		TranConfigVO vo = new TranConfigVO();
-		vo = new TranConfigVO();
-		vo.setCurrency(sCurrency_pair);
-		vo.setTran_type("S");
-		TranConfigVO tranConfigSellVO = tranConfigDAO.getTranConfig(vo);
-		String sTranSellYn = tranConfigSellVO.getTran_yn();
+        TranConfigVO vo = new TranConfigVO();
+        vo.setCurrency(sCurrency);
+        vo.setTran_type(Constants.TRAN_SELL);
+        TranConfigVO tranConfigBuyVO = tranConfigDAO.getTranConfig(vo);
+        String sTranSellYn = tranConfigBuyVO.getTran_yn();
 
-		OrdersBuyVO ordersBuyVO = new OrdersBuyVO();
-		ordersBuyVO.setCurrency_pair(sCurrency_pair);
-		List<OrdersBuyVO> listOrdersBuyVo = ordersBuyDao.getOrdersBuyList(ordersBuyVO);
 		BalanceVO balanceVO = null;
 
-		float currency_balance = 0;
-//		try {
-//			balanceVO = api.getBalances();
-//			if (Constants.ETH_KRW.equals(sCurrency_pair)) {
-//				currency_balance = api.getBalances().getEth().getAvailable();
-//			} else if (Constants.ETC_KRW.equals(sCurrency_pair)) {
-//				currency_balance = api.getBalances().getEtc().getAvailable();
-//			}
-//		} catch (ParseException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+		balanceVO = api.getBalance(Constants.COIN_XRP);
+		float avail = balanceVO.getXrp().getAvail();
+
+		boolean isSell = false;
 
 		try {
-			TickerVO tickerVo = api.getTickerAll();
-			logger.info(sCurrency_pair + " Ticker Price =============> " + tickerVo.getBch().getLast());
-
-			boolean isSell = false;
-
-			for (OrdersSellVO sub : listOrdersSellVo) {
+			for (OrderVO sub : listOrdersSellVo) {
 				if ("N".equals(sTranSellYn)) {
 					continue;
 				}
@@ -96,41 +79,36 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 					continue;
 				}
 
-				if (currency_balance < (sub.getCoin_amount())) {
-					sub.setCoin_amount(currency_balance);
+				if (avail < (sub.getQty())) {
+					sub.setQty((double) avail);
 				}
 
-				float limit = 0;
-				if (Constants.ETH_KRW.equals(sCurrency_pair)) {
-					limit = (float) 0.01;
-				} else if (Constants.ETC_KRW.equals(sCurrency_pair)) {
-					limit = (float) 0.1;
-				}
-				if (currency_balance >= limit)
-					if (!Constants.SUCCESS.equals(sub.getStatus())) {
-						OrdersSellVO sellVO = new OrdersSellVO();
-						sellVO.setCurrency_pair(sCurrency_pair);
-						sellVO.setCoin_amount(sub.getCoin_amount());
+					if ("N".equals(sub.getResult())) {
+						OrderVO sellVO = new OrderVO();
+						sellVO.setCurrency(sCurrency);
+						sellVO.setQty(sub.getQty());
 						sellVO.setPrice(sub.getPrice());
-						OrderRetVO ret = null;//api.ordersSellLimit(sellVO);
+						OrderRetVO ret = api.ordersLimitSell(sellVO);
 						if (null != ret) {
-							OrdersSellVO sellVOUpt = new OrdersSellVO();
-							sellVOUpt.setCurrency_pair(sCurrency_pair);
-							sellVOUpt.setSell_seq(sub.getSell_seq());
-							sellVOUpt.setOrder_id(ret.getOrderId());
-							sellVOUpt.setStatus(ret.getStatus());
-							ordersSellDao.updateOrdersSell(sellVOUpt);
+							OrderVO sellVOUpt = new OrderVO();
+							sellVOUpt.setCurrency(sCurrency);
+							sellVOUpt.setType(Constants.TRAN_SELL);
+							sellVOUpt.setSeq(sub.getSeq());
+							sellVOUpt.setOrderId(ret.getOrderId());
+							sellVOUpt.setResult(ret.getResult());
+							orderDao.updateOrdersSell(sellVOUpt);
 						}
 
-						if (Constants.SUCCESS.equals(ret.getStatus())) {
+						if (Constants.SUCCESS.equals(ret.getResult())) {
 							isSell = true;
-							OrdersBuyVO buyVO = new OrdersBuyVO();
-							buyVO.setCurrency_pair(sCurrency_pair);
-							buyVO.setBuy_seq(sub.getSell_seq());
-							buyVO.setStatus("N");
-							ordersBuyDao.updateOrdersBuy(buyVO);
-							sendMail.sendMail("Korbit Sell", sCurrency_pair + "/" + " Sell " + "/" + " Unit:"
-									+ sub.getCoin_amount() + "/" + " Price:" + sub.getPrice());
+							OrderVO buyVO = new OrderVO();
+							buyVO.setCurrency(sCurrency);
+							buyVO.setType(Constants.TRAN_BUY);
+							buyVO.setSeq(sub.getSeq());
+							buyVO.setResult("N");
+							//orderDao.updateOrdersBuy(buyVO);
+							sendMail.sendMail("CoinOne Sell", sCurrency + "/" + " Sell " + "/" + " Unit:"
+									+ sub.getQty() + "/" + " Price:" + sub.getPrice());
 						} else {
 							System.out.println("Buy Fail ==>" + ret.getStatus());
 						}
@@ -143,7 +121,7 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 			e.printStackTrace();
 		}
 
-		logger.info("tranCoin --> " + sCurrency_pair);
+		logger.info("tranCoin --> " + sCurrency);
 		return "item";
 	}
 }

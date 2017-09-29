@@ -11,12 +11,12 @@ import coinone.tran.vo.TranConfigVO;
 
 
 @Repository
-public class TranConfigDAOImpl extends GenericDAOImpl<TranConfigVO, String> implements TranConfigDAO {
+public class TranConfigDAOImpl implements TranConfigDAO {
 	@Inject
 	private SqlSession sqlSession;
 	
 	private static final String namespace = 
-			"com.mycom.myapp.dao.DbMapper";
+			"coinone.tran.dao.DbMapper.TranConfig";
 	@Override
 	public List<TranConfigVO> getTranConfigList() {
 		// TODO Auto-generated method stub

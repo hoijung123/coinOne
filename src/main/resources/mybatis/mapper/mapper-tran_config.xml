@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="coinone.tran.dao.DbMapper.TranConfig">
+    <insert id="registerTranConfig">
+        INSERT INTO `coinone`.`t_order`
+        (`currency`,
+        `type`,
+        `seq`,
+        `price`,
+        `qty`,
+        `buy_date`,
+        `order_id`,
+        `result`,
+        `error_code`)
+        VALUES
+        (#{currency},
+        #{type},
+        #{seq},
+        #{price},
+        #{qty},
+        now(),
+        #{orderId},
+        #{result},
+        #{errorCode})
+    </insert>
+
+    <!-- /* select dual */ -->
+    <select id="getTranConfigList" resultType="coinone.tran.vo.TranConfigVO">
+        SELECT `t_order`.`currency`,
+        `t_order`.`type`,
+        `t_order`.`seq`,
+        `t_order`.`price`,
+        `t_order`.`qty`,
+        `t_order`.`buy_date`,
+        `t_order`.`order_id`,
+        `t_order`.`result`,
+        `t_order`.`error_code`
+        FROM `coinone`.`t_order`
+        where
+        1=1
+        <if test="currency != null">
+            AND currency =
+            #{currency}
+        </if>
+        <if test="type != null">
+            AND type =
+            #{type}
+        </if>
+    </select>
+
+    <select id="getTranConfig" resultType="coinone.tran.vo.TranConfigVO">
+    SELECT `t_tran_config`.`currency`,
+    `t_tran_config`.`tran_type`,
+    `t_tran_config`.`target_price`,
+    `t_tran_config`.`status`,
+    `t_tran_config`.`tran_yn`,
+    `t_tran_config`.`units`
+FROM `coinone`.`t_tran_config`
+            where currency = #{currency}
+            and tran_type =  #{tran_type}
+	</select>
+
+    <update id="updateTranConfig">
+        UPDATE t_order
+        SET
+        <if test="price != null">
+            price = #{price},
+        </if>
+        <if test="qty != null">
+            qty = #{qty},
+        </if>
+        <if test="buyDate != null">
+            buy_date = #{buyDate},
+        </if>
+        <if test="orderId != null">
+            order_id = #{orderId},
+        </if>
+        <if test="result != null">
+            result = #{result},
+        </if>
+        <if test="errorCode != null">
+            error_code = #{errorCode},
+        </if>
+        currency = #{currency}
+        WHERE `currency` = #{currency} AND `type` =
+        #{type} and seq = #{seq}
+    </update>
+
+</mapper>
