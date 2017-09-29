@@ -6,9 +6,11 @@ import java.util.*;
 import javax.inject.Inject;
 
 import coinone.tran.dao.OrderDAO;
+import coinone.tran.dao.TranConfigDAO;
 import coinone.tran.service.CallAPIService;
 import coinone.tran.vo.LimitOrderVO;
 import coinone.tran.vo.OrderVO;
+import coinone.tran.vo.TranConfigVO;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,9 @@ public class HomeController {
 
 	@Inject
 	private OrderDAO orderDAO;
+
+	@Inject
+	private TranConfigDAO tranConfigDAO;
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -175,5 +180,13 @@ public class HomeController {
 		orderDAO.registerSellReq(vo);
 
 		return "redirect:listLimitOrders?currency=" + sCurrency;
+	}
+
+	@RequestMapping(value = "/tran/listTranConfig", method = RequestMethod.GET)
+	public String listTranConfig(@RequestParam Map<String, String> params, Model model) throws Exception {
+		List<TranConfigVO>  tranConfigVOList = tranConfigDAO.getTranConfigList();
+		model.addAttribute("tranConfigVOList", tranConfigVOList);
+
+		return "tran/listTranConfig";
 	}
 }

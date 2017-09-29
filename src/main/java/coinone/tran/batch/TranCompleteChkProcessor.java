@@ -48,6 +48,10 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 		TranConfigVO tranConfigSellVO = tranConfigDAO.getTranConfig(vo);
 		String sTranSellYn = tranConfigSellVO.getTran_yn();
 
+		vo.setTran_type(Constants.TRAN_BUY);
+		TranConfigVO tranConfigBuyVO = tranConfigDAO.getTranConfig(vo);
+		String sTranBuyYn = tranConfigSellVO.getTran_yn();
+
 		OrderVO ordersBuyVO = new OrderVO();
 		ordersBuyVO.setType(Constants.TRAN_BUY);
 		ordersBuyVO.setCurrency(sCurrency);
@@ -60,6 +64,9 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 		boolean find = false;
 
 		for (OrderVO sub : ordersSellList) {
+			if ("N".equals(sTranSellYn)) {
+				continue;
+			}
 			find = false;
 			for (OrderVO s : openOrderList) {
 				if (s.getOrderId().equals(sub.getOrderId())) {
@@ -83,6 +90,9 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 		
 
 		for (OrderVO sub : ordersBuyList) {
+			if ("N".equals(sTranBuyYn)) {
+				continue;
+			}
 			find = false;
 			for (OrderVO s : openOrderList) {
 				if (s.getOrderId().equals(sub.getOrderId())) {
