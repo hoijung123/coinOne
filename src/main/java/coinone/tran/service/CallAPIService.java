@@ -92,8 +92,8 @@ public class CallAPIService {
 	public BalanceVO getBalance(String coin) throws Exception {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
-		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
-		apikey.put("nonce", String.valueOf(nonce));
+		String nonce = String.valueOf(new Date().getTime());
+		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/account/balance/";
 
@@ -111,7 +111,7 @@ public class CallAPIService {
 		map.put("X-COINONE-SIGNATURE", signature);
 
 		String json = HTTPUtil.getJSONfromPost(url, map, payload);
-		// System.out.println(result);
+		 System.out.println(json);
 		// String strBalance = (String) ((JSONObject) result.get(coin)).get("avail");
 
 		ObjectMapper mapper = new ObjectMapper();

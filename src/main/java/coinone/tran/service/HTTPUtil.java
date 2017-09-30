@@ -67,10 +67,12 @@ public class HTTPUtil {
     }
 
     public static String getJSONfromGet(String apiUrl) throws Exception {
+        Thread.sleep(200);
         return requestGet(apiUrl, "application/json");
     }
 
     public static String getJSONfromPost(String apiUrl, Map<String, String> reqProps, String params) throws Exception {
+        Thread.sleep(500);
         return (requestPost(apiUrl, reqProps, params));
     }
 
