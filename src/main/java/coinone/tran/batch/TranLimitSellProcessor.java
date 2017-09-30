@@ -26,7 +26,6 @@ import coinone.tran.vo.TranConfigVO;
 public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 
 	private static final Logger logger = LoggerFactory.getLogger(TranLimitSellProcessor.class);
-	private static final int SLEEP_TIME = 2000;
 
 	@Inject
 	private TranConfigDAO tranConfigDAO;
@@ -36,14 +35,7 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 	@Override
 	public String process(String item) throws Exception {
 		this.tranCoin(Constants.COIN_XRP);
-//		if (api.getOrdersOpen(Constants.ETH_KRW).size() < 10) {
-//			this.tranCoin(Constants.ETH_KRW);
-//			Thread.sleep(SLEEP_TIME);
-//		}
-//		if (api.getOrdersOpen(Constants.ETC_KRW).size() < 10) {
-//			this.tranCoin(Constants.ETC_KRW);
-//			Thread.sleep(SLEEP_TIME);
-//		}
+		this.tranCoin(Constants.COIN_BCH);
 		return item;
 	}
 

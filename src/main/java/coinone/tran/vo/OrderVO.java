@@ -43,6 +43,16 @@ public class OrderVO extends BaseVO {
 	}
 
 	Integer seq = null;
+
+	public Integer getBase() {
+		return base;
+	}
+
+	public void setBase(Integer base) {
+		this.base = base;
+	}
+
+	Integer base = null;
 	Long price = null;
 	Double qty = null;
 	String buyDate = "";

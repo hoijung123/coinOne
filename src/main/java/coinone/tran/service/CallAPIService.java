@@ -135,8 +135,8 @@ public class CallAPIService {
 	public LimitOrderVO getLimitOrders(String coin) throws Exception {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
-		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
-		apikey.put("nonce", String.valueOf(nonce));
+		String nonce = String.valueOf(new Date().getTime());
+		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/limit_orders/";
 
@@ -193,8 +193,8 @@ public class CallAPIService {
 	public OrderRetVO ordersLimitBuy(OrderVO vo) throws Exception {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
-		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
-		apikey.put("nonce", String.valueOf(nonce));
+		String nonce = String.valueOf(new Date().getTime());
+		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/limit_buy/";
 
@@ -237,8 +237,8 @@ public class CallAPIService {
 	public OrderRetVO ordersLimitSell(OrderVO vo) throws Exception {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
-		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
-		apikey.put("nonce", String.valueOf(nonce));
+		String nonce = String.valueOf(new Date().getTime());
+		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/limit_sell/";
 
@@ -280,8 +280,8 @@ public class CallAPIService {
 	public BaseVO cancelOrder(OrderVO orderVO) throws Exception {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
-		long nonce = Long.valueOf(apikey.get("nonce")) + 1;
-		apikey.put("nonce", String.valueOf(nonce));
+		String nonce = String.valueOf(new Date().getTime());
+		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/cancel/";
 

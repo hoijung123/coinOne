@@ -82,7 +82,12 @@ SELECT
     currency,
     'bid' as type,
     seq,
-    price - seq as price,
+        <if test='currency == "bch"'>
+    truncate(price - seq * #{base}, -3) as price,
+        </if>
+        <if test='currency == "xrp"'>
+        price - seq as price,
+        </if>
     qty,
     result
 FROM
@@ -110,7 +115,12 @@ SELECT
     currency,
     'ask' as type,
     seq,
-    price + seq + 1 as price,
+        <if test='currency == "bch"'>
+        truncate(price + seq* #{base},3) + #{base} as price,
+        </if>
+        <if test='currency == "xrp"'>
+            price + seq + 1 as price,
+        </if>
     qty,
     result
 FROM
