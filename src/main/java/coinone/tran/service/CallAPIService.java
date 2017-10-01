@@ -88,6 +88,9 @@ public class CallAPIService {
 	 * "avail":"6901425", "balance":"6901430" } }
 	 */
 	public BalanceVO getBalance(String coin) throws Exception {
+		apikey = new HashMap<>();
+		apikey.put("access_token", Constants.ACCESS_TOKEN);
+		apikey.put("secret", Constants.SECRET);
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
@@ -130,6 +133,9 @@ public class CallAPIService {
 	}
 
 	public LimitOrderVO getLimitOrders(String coin) throws Exception {
+		apikey = new HashMap<>();
+		apikey.put("access_token", Constants.ACCESS_TOKEN);
+		apikey.put("secret", Constants.SECRET);
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
@@ -187,6 +193,9 @@ public class CallAPIService {
 	  "nonce": Date.now()
 */
 	public OrderRetVO ordersLimitBuy(OrderVO vo) throws Exception {
+		apikey = new HashMap<>();
+		apikey.put("access_token", Constants.ACCESS_TOKEN);
+		apikey.put("secret", Constants.SECRET);
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
@@ -230,6 +239,9 @@ public class CallAPIService {
 	
 	/*�ֹ�-�ż�*/
 	public OrderRetVO ordersLimitSell(OrderVO vo) throws Exception {
+		apikey = new HashMap<>();
+		apikey.put("access_token", Constants.ACCESS_TOKEN);
+		apikey.put("secret", Constants.SECRET);
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
@@ -272,6 +284,9 @@ public class CallAPIService {
 	}
 
 	public BaseVO cancelOrder(OrderVO orderVO) throws Exception {
+		apikey = new HashMap<>();
+		apikey.put("access_token", Constants.ACCESS_TOKEN);
+		apikey.put("secret", Constants.SECRET);
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
