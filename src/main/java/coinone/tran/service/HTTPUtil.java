@@ -33,7 +33,7 @@ public class HTTPUtil {
             response.append(inputLine);
         }
         in.close();
-        Thread.sleep(200);
+       Thread.sleep(200);
 
         return response.toString();
     }
@@ -63,7 +63,7 @@ public class HTTPUtil {
             response.append(inputLine);
         }
         in.close();
-        Thread.sleep(200);
+       Thread.sleep(200);
 
         return response.toString();
     }
