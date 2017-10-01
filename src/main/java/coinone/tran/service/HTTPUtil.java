@@ -33,6 +33,7 @@ public class HTTPUtil {
             response.append(inputLine);
         }
         in.close();
+        Thread.sleep(200);
 
         return response.toString();
     }
@@ -62,6 +63,7 @@ public class HTTPUtil {
             response.append(inputLine);
         }
         in.close();
+        Thread.sleep(200);
 
         return response.toString();
     }
@@ -72,8 +74,9 @@ public class HTTPUtil {
     }
 
     public static String getJSONfromPost(String apiUrl, Map<String, String> reqProps, String params) throws Exception {
-        Thread.sleep(500);
+
         return (requestPost(apiUrl, reqProps, params));
+
     }
 
     public static String paramsBuilder(Map<String, String> map) {

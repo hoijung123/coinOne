@@ -22,11 +22,9 @@ public class CallAPIService {
 	private Map<String, String> apikey;
 
 	public CallAPIService() {
-		Map<String, String> apikey = new HashMap<>();
+		apikey = new HashMap<>();
 		apikey.put("access_token", Constants.ACCESS_TOKEN);
 		apikey.put("secret", Constants.SECRET);
-		apikey.put("nonce", String.valueOf(new Date().getTime())); ////
-		this.apikey = apikey;
 	}
 
 	public CallAPIService(Map<String, String> apikey) {
@@ -93,7 +91,6 @@ public class CallAPIService {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
-		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/account/balance/";
 
@@ -136,7 +133,6 @@ public class CallAPIService {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
-		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/limit_orders/";
 
@@ -194,7 +190,6 @@ public class CallAPIService {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
-		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/limit_buy/";
 
@@ -238,7 +233,6 @@ public class CallAPIService {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
-		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/limit_sell/";
 
@@ -281,7 +275,6 @@ public class CallAPIService {
 		String accessToken = apikey.get("access_token");
 		String secret = apikey.get("secret");
 		String nonce = String.valueOf(new Date().getTime());
-		apikey.put("nonce", nonce);
 
 		String url = Constants.API_URL + "v2/order/cancel/";
 
