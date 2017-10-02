@@ -1,5 +1,6 @@
 package coinone.tran.batch;
 
+import java.awt.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
     @Override
     public String process(String item) throws Exception {
         this.tranCoin(Constants.COIN_XRP);
+       Thread.sleep(1000);
         this.tranCoin(Constants.COIN_BCH);
         return item;
     }
@@ -102,7 +104,8 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
                         sendMail.sendMail("CoinOne Buy", sCurrency + "/" + " Buy " + "/" + " Unit:"
                                 + sub.getQty() + "/" + " Price:" + sub.getPrice());
                     } else {
-                        System.out.println("Buy Fail ==>" + ret.getResult());
+                        sendMail.sendMail("CoinOne Buy Fail", sCurrency + "/" + " Sell " + "/" + " Result:"
+                                + ret.getResult() + "/" + " ErrorCode:" + ret.getErrorCode());
                     }
                 } else {
                     System.out.println("Tran is Not Setting");

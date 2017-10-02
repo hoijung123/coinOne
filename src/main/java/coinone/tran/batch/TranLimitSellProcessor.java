@@ -1,5 +1,6 @@
 package coinone.tran.batch;
 
+import java.awt.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 	@Override
 	public String process(String item) throws Exception {
 		this.tranCoin(Constants.COIN_XRP);
+		Thread.sleep(1000);
 		this.tranCoin(Constants.COIN_BCH);
 		return item;
 	}
@@ -57,8 +59,15 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 
 		BalanceVO balanceVO = null;
 
-		balanceVO = api.getBalance(Constants.COIN_XRP);
-		Double avail = balanceVO.getXrp().getAvail();
+		balanceVO = api.getBalance(sCurrency);
+		Double avail = null;
+		if(Constants.COIN_XRP.equals(sCurrency))
+		{
+			avail = balanceVO.getXrp().getAvail();
+		} else if(Constants.COIN_BCH.equals(sCurrency))
+		{
+			avail = balanceVO.getBch().getAvail();
+		}
 
 		boolean isSell = false;
 
@@ -89,7 +98,10 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 							sellVOUpt.setSeq(sub.getSeq());
 							sellVOUpt.setOrderId(ret.getOrderId());
 							sellVOUpt.setResult(ret.getResult());
+							sellVOUpt.setErrorCode(ret.getErrorCode());
 							orderDao.updateOrdersSell(sellVOUpt);
+							sendMail.sendMail("CoinOne Sell Fail", sCurrency + "/" + " Sell " + "/" + " Result:"
+									+ ret.getResult() + "/" + " ErrorCode:" + ret.getErrorCode());
 						}
 
 						if (Constants.SUCCESS.equals(ret.getResult())) {
@@ -103,6 +115,8 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
 							sendMail.sendMail("CoinOne Sell", sCurrency + "/" + " Sell " + "/" + " Unit:"
 									+ sub.getQty() + "/" + " Price:" + sub.getPrice());
 						} else {
+							sendMail.sendMail("CoinOne Sell Fail", sCurrency + "/" + " Sell " + "/" + " Result:"
+									+ ret.getResult() + "/" + " ErrorCode:" + ret.getErrorCode());
 							System.out.println("Buy Fail ==>" + ret.getStatus());
 						}
 

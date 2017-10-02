@@ -1,5 +1,6 @@
 package coinone.tran.batch;
 
+import java.awt.*;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,6 +29,8 @@ public class TranCompleteChkProcessor implements ItemProcessor<String, String> {
 	@Override
 	public String process(String item) throws Exception {
 		this.tranCoin(Constants.COIN_XRP);
+		Thread.sleep(500);
+		this.tranCoin(Constants.COIN_BCH);
 		return item;
 	}
 

@@ -116,7 +116,7 @@ SELECT
     'ask' as type,
     seq,
         <if test='currency == "bch"'>
-        truncate(price + seq* #{base},3) + #{base} as price,
+        truncate(price + seq* #{base},-3) + #{base} as price,
         </if>
         <if test='currency == "xrp"'>
             price + seq + 1 as price,

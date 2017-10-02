@@ -43,7 +43,7 @@ public class TranScheduler {
 	}
 
 
-	@Scheduled(fixedRate = 1000 * 10)
+	@Scheduled(cron = "0 * * * * *")
 	public void tranLimitBuyJob() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 
@@ -70,7 +70,7 @@ public class TranScheduler {
 		System.out.println("tranLimitBuyJob Done");
 	}
 
-	@Scheduled(fixedRate = 1000 * 10)
+	@Scheduled(cron = "10 * * * * *")
 	public void tranLimitSellJob() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 
@@ -97,7 +97,7 @@ public class TranScheduler {
 		System.out.println("tranLimitSellJob Done");
 	}
 
-	@Scheduled(fixedRate = 1000 * 3)
+	@Scheduled(cron = "20 * * * * *")
 	public void tranCompleteChkJob() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 

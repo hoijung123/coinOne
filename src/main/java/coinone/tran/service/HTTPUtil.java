@@ -1,4 +1,6 @@
 package coinone.tran.service;
+
+import coinone.tran.util.Constants;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,7 +23,7 @@ public class HTTPUtil {
         conn.setConnectTimeout(5000);
         conn.connect();
 
-        if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
 //            throw new Exception();
         }
 
@@ -33,7 +35,7 @@ public class HTTPUtil {
             response.append(inputLine);
         }
         in.close();
-       Thread.sleep(200);
+
 
         return response.toString();
     }
@@ -43,8 +45,8 @@ public class HTTPUtil {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
-        if(reqProps != null)
-            for(String key : reqProps.keySet()) {
+        if (reqProps != null)
+            for (String key : reqProps.keySet()) {
                 conn.setRequestProperty(key, reqProps.get(key));
             }
         conn.setConnectTimeout(5000);
@@ -63,31 +65,40 @@ public class HTTPUtil {
             response.append(inputLine);
         }
         in.close();
-       Thread.sleep(200);
+        //Thread.sleep(200);
 
         return response.toString();
     }
 
     public static String getJSONfromGet(String apiUrl) throws Exception {
-        Thread.sleep(200);
-        return requestGet(apiUrl, "application/json");
+//        if (Constants.isRun)
+//        {
+//            Thread.sleep(800);
+//        }
+        String ret = requestGet(apiUrl, "application/json");
+        Constants.isRun = false;
+        return ret;
     }
 
     public static String getJSONfromPost(String apiUrl, Map<String, String> reqProps, String params) throws Exception {
-
-        return (requestPost(apiUrl, reqProps, params));
-
+//        if (Constants.isRun)
+//        {
+//            Thread.sleep(800);
+//        }
+        String ret = requestPost(apiUrl, reqProps, params);
+        Constants.isRun = false;
+        return ret;
     }
 
     public static String paramsBuilder(Map<String, String> map) {
         StringBuilder builder = new StringBuilder();
-        for(String key : map.keySet()) {
+        for (String key : map.keySet()) {
             builder.append(key);
             builder.append("=");
             builder.append(map.get(key));
             builder.append("&");
         }
-        builder.deleteCharAt(builder.length()-1);
+        builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
     }
 }
