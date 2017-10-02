@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="coinone:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="coinone-1.0.0-BUILD-SNAPSHOT.war">
+      <element id="artifact" artifact-name="coinone:war exploded" />
+    </root>
+  </artifact>
+</component>
