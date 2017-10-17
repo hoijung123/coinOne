@@ -11,6 +11,7 @@ import coinone.tran.service.CallAPIService;
 import coinone.tran.vo.LimitOrderVO;
 import coinone.tran.vo.OrderVO;
 import coinone.tran.vo.TranConfigVO;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +121,12 @@ public class HomeController {
         LimitOrderVO vo = comm.getLimitOrders(currency);
         model.addAttribute("ordersOpenList", vo.getLimitOrders());
 
+        String json = "";
+        ObjectMapper mapper = new ObjectMapper();
+        LimitOrderVO vo2 = null;
+        json = mapper.writeValueAsString(vo.getLimitOrders());
+        model.addAttribute("json", json);
+
         model.addAttribute("currency", currency);
 
         OrderVO orderVO = new OrderVO();
@@ -183,6 +190,14 @@ public class HomeController {
             base = 1;
         } else if (Constants.COIN_BCH.equals(sCurrency)) {
             base = 1000;
+        } else if (Constants.COIN_ETH.equals(sCurrency)) {
+            base = 1000;
+        } else if (Constants.COIN_QTUM.equals(sCurrency)) {
+            base = 30;
+        } else if (Constants.COIN_BTC.equals(sCurrency)) {
+            base = 1000 * 20;
+        } else if (Constants.COIN_ETC.equals(sCurrency)) {
+            base = 30;
         }
         vo.setBase(base);
 
@@ -198,6 +213,25 @@ public class HomeController {
         List<TranConfigVO> tranConfigVOList = tranConfigDAO.getTranConfigList();
         model.addAttribute("tranConfigVOList", tranConfigVOList);
 
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(tranConfigVOList);
+        model.addAttribute("json", json);
+
         return "tran/listTranConfig";
+    }
+
+    @RequestMapping(value = "/tran/saveTranConfig", method = RequestMethod.POST)
+    public String saveTranConfig(@RequestParam Map<String, String> params, Model model) throws Exception {
+        String currency = params.get("currency");
+        String tran_type = params.get("tran_type");
+        String tran_yn = params.get("tran_yn");
+
+        TranConfigVO vo = new TranConfigVO();
+        vo.setCurrency(currency);
+        vo.setTran_type(tran_type);
+        vo.setTran_yn(tran_yn);
+        tranConfigDAO.updateTranConfig(vo);
+
+        return "redirect:listTranConfig";
     }
 }

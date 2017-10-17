@@ -48,29 +48,26 @@ FROM `coinone`.`t_tran_config`
 	</select>
 
     <update id="updateTranConfig">
-        UPDATE t_order
+        UPDATE t_tran_config
         SET
-        <if test="price != null">
-            price = #{price},
+        <if test="target_price != null">
+            target_price = #{target_price},
         </if>
-        <if test="qty != null">
-            qty = #{qty},
+        <if test="tran_type != null">
+            tran_type = #{tran_type},
         </if>
-        <if test="buyDate != null">
-            buy_date = #{buyDate},
+        <if test="status != null">
+            status = #{status},
         </if>
-        <if test="orderId != null">
-            order_id = #{orderId},
+        <if test="tran_yn != null">
+            tran_yn = #{tran_yn},
         </if>
-        <if test="result != null">
-            result = #{result},
-        </if>
-        <if test="errorCode != null">
-            error_code = #{errorCode},
+        <if test="units != null">
+            units = #{units},
         </if>
         currency = #{currency}
-        WHERE `currency` = #{currency} AND `type` =
-        #{type} and seq = #{seq}
+        WHERE `currency` = #{currency} AND `tran_type` =
+        #{tran_type}
     </update>
 
 </mapper>

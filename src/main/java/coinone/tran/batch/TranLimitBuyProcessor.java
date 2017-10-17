@@ -33,8 +33,16 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
     @Override
     public String process(String item) throws Exception {
         this.tranCoin(Constants.COIN_XRP);
-       Thread.sleep(1000);
+        Thread.sleep(1000);
         this.tranCoin(Constants.COIN_BCH);
+        Thread.sleep(1000);
+        this.tranCoin(Constants.COIN_ETH);
+        Thread.sleep(1000);
+        this.tranCoin(Constants.COIN_QTUM);
+        Thread.sleep(1000);
+        this.tranCoin(Constants.COIN_BTC);
+        Thread.sleep(1000);
+        this.tranCoin(Constants.COIN_ETC);
         return item;
     }
 
@@ -100,7 +108,7 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
                         sellVO.setType(Constants.TRAN_SELL);
                         sellVO.setSeq(sub.getSeq());
                         sellVO.setResult("N");
-                       // orderDao.updateOrder(sellVO);
+                        // orderDao.updateOrder(sellVO);
                         sendMail.sendMail("CoinOne Buy", sCurrency + "/" + " Buy " + "/" + " Unit:"
                                 + sub.getQty() + "/" + " Price:" + sub.getPrice());
                     } else {
