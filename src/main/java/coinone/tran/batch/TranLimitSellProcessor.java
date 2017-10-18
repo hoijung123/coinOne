@@ -55,8 +55,10 @@ public class TranLimitSellProcessor implements ItemProcessor<String, String> {
         vo.setCurrency(sCurrency);
         vo.setTran_type(Constants.TRAN_SELL);
         TranConfigVO tranConfigBuyVO = tranConfigDAO.getTranConfig(vo);
-        String sTranSellYn = tranConfigBuyVO.getTran_yn();
-
+        String sTranSellYn = "";
+        if (null!= tranConfigBuyVO) {
+			sTranSellYn = tranConfigBuyVO.getTran_yn();
+		}
 		BalanceVO balanceVO = null;
 
 		balanceVO = api.getBalance(sCurrency);

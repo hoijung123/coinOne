@@ -32,4 +32,10 @@ public class TranConfigDAOImpl implements TranConfigDAO {
 		// TODO Auto-generated method stub
 		sqlSession.update(namespace + ".updateTranConfig", vo);
 	}
+
+	@Override
+	public void registerTranConfig(TranConfigVO vo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(namespace + ".registerTranConfig", vo);
+	}
 }

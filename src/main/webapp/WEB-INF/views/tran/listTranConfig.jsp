@@ -16,40 +16,22 @@
     <title>Home</title>
 </head>
 <script type="text/javascript">
-    function change(currency_pair) {
-        location.href = "listLimitOrders?currency=" + currency_pair;
+    function saveTranConfig() {
+        if (!confirm("저장하시겠습니까?")) {
+            return;
+        }
+        frmSaveTranConfig.submit();
     }
 
-    function cancelOrder(currency, orderId, qty, price, type) {
-        if (!confirm("Order를 삭제하시겠습니까?")) {
-            return;
-        }
-        var loc = "cancelOrder?currency=" + currency + "&orderId=" + orderId + "&qty=" + qty + "&price=" + price + "&type=" + type;
-        location.href = loc;
+    function newTranConfig() {
+        $('input[name="currency"]').val("");
+        $('input[name="tran_yn"]').val("");
+        $('input[name="tran_type"]').val("");
+        $('input[name="currency"]').focus();
+        $('input[name="mode"]').val("N");
     }
-
-    function getDtl() {
-        if ("" == qty.value) {
-            qty.focus();
-            return;
-        }
-        if ("" == reqCnt.value) {
-            reqCnt.focus();
-            return;
-        }
-        if (!confirm("Order를 생성하시겠습니까?")) {
-            return;
-        }
-        var loc = "registerOrderReq?currency=" + currency.value + "&qty=" + qty.value + "&reqCnt=" + reqCnt.value;
-        location.href = loc;
-    }
-
-    function  saveDtl() {
-        if (!confirm("저장하시겠습니까?"))
-        {
-            return;
-        }
-        saveTranConfig.submit();
+    function listTranConfig() {
+        location.href = "listTranConfig";
     }
 </script>
 
@@ -74,32 +56,49 @@
         <!-- content 시작 -->
         <div id="content_pop">
             <h1>TranConfig</h1>
-
-            <input type="button" value="Order생성" onclick="registerOrderReq()">
-
+            <input type="button" value="조회" onclick="listTranConfig()">
             <table id="list4"></table>
 
-            <form name="saveTranConfig" method="post" action="saveTranConfig">
-            <table id="tbDtl" tabindex="0" role="presentation" aria-multiselectable="true" aria-labelledby="gbox_list4"
-                   class="ui-jqgrid-btable ui-common-table" style="width: 600px;">
-                <tbody>
-                <tr class="jqgfirstrow" role="row">
-                    <td role="gridcell" style="height:0px;width:30px;">currency</td>
-                    <td role="gridcell" style="height:0px;width:30px;"><input type="text" name="currency" id="currency"></td>
-                </tr>
-                <tr class="jqgfirstrow" role="row">
-                    <td role="gridcell" style="height:0px;width:30px;">tran_type</td>
-                    <td role="gridcell" style="height:0px;width:30px;"><input type="text" name="tran_type" id="tran_type"></td>
-                </tr>
-                <tr class="jqgfirstrow" role="row">
-                    <td role="gridcell" style="height:0px;width:30px;">tran_yn</td>
-                    <td role="gridcell" style="height:0px;width:30px;"><input type="text" name="tran_yn" id="tran_yn"></td>
-                </tr>
-                <tr class="jqgfirstrow" role="row">
-                    <td colspan="2"><input type="button" value="Save" onclick="saveDtl()"></td>
-                </tr>
-                </tbody>
-            </table>
+            <form name="frmSaveTranConfig" method="post" action="saveTranConfig">
+                <input type="hidden" name="mode" id="mode" value="E">
+                <table id="tbDtl" tabindex="0" role="presentation" aria-multiselectable="true"
+                       aria-labelledby="gbox_list4"
+                       class="ui-jqgrid-btable ui-common-table" style="width: 600px;">
+                    <tbody>
+                    <tr class="jqgfirstrow" role="row">
+                        <td role="gridcell" style="height:0px;width:30px;">currency</td>
+                        <td role="gridcell" style="height:0px;width:30px;"><select name="currency" id="currency">
+                            <option value="btc">btc</option>
+                            <option value="bch">bch</option>
+                            <option value="eth">eth</option>
+                            <option value="etc">etc</option>
+                            <option value="xrp">xrp</option>
+                            <option value="qtum">qtum</option>
+                        </select></td>
+                    </tr>
+                    <tr class="jqgfirstrow" role="row">
+                        <td role="gridcell" style="height:0px;width:30px;">tran_type</td>
+                        <td role="gridcell" style="height:0px;width:30px;">
+                            <select name="tran_type" id="tran_type">
+                                <option value="bid">매수</option>
+                                <option value="ask">매도</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="jqgfirstrow" role="row">
+                        <td role="gridcell" style="height:0px;width:30px;">tran_yn</td>
+                        <td role="gridcell" style="height:0px;width:30px;">
+                            <select name="tran_yn" id="tran_yn">
+                                <option value="Y">Y</option>
+                                <option value="N">N</option>
+                            </select></td>
+                    </tr>
+                    <tr class="jqgfirstrow" role="row">
+                        <td colspan="2"><input type="button" value="Save" onclick="saveTranConfig()">&nbsp;<input
+                                type="button" value="New" onclick="newTranConfig()"></td>
+                    </tr>
+                    </tbody>
+                </table>
             </form>
         </div>
         <!-- //content 끝-->
@@ -136,28 +135,17 @@
 
             caption: "Manipulating Array Data",
 
-            onCellSelect: function (rowid, index, contents, event) {
-                var cm = $("#list4").jqGrid('getGridParam', 'colModel');
-                if (cm[index].name == "index") {
-                    var mygrid = jQuery("#list4")[0];
-                    var currency = $('#list4').jqGrid('getCell', rowid, 'currency');
-                    var orderId = $('#list4').jqGrid('getCell', rowid, 'orderId');
-                    var qty = $('#list4').jqGrid('getCell', rowid, 'qty');
-                    var price = $('#list4').jqGrid('getCell', rowid, 'price');
-                    var type = $('#list4').jqGrid('getCell', rowid, 'type');
-                    cancelOrder(currency, orderId, qty, price, type);
-                }
-            },
-
             onSelectRow: function (rowid) {
                 if (rowid && rowid !== lastsel2) {
                     var cm = $("#list4").jqGrid('getGridParam', 'colModel');
                     var currency = $('#list4').jqGrid('getCell', rowid, 'currency');
                     var tran_yn = $('#list4').jqGrid('getCell', rowid, 'tran_yn');
                     var tran_type = $('#list4').jqGrid('getCell', rowid, 'tran_type');
-                    $('input[name="currency"]').val(currency);
-                    $('input[name="tran_yn"]').val(tran_yn);
-                    $('input[name="tran_type"]').val(tran_type);
+                    $("#currency").val(currency);
+                    //$('input[name="currency"]').val(currency);
+                    $("#tran_yn").val(tran_yn);
+                    $("#tran_type").val(tran_type);
+                    $('input[name="mode"]').val("E");
                     lastsel2 = rowid;
                 }
             },

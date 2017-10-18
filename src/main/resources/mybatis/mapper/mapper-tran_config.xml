@@ -2,26 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="coinone.tran.dao.DbMapper.TranConfig">
     <insert id="registerTranConfig">
-        INSERT INTO `coinone`.`t_order`
+        INSERT INTO `coinone`.`t_tran_config`
         (`currency`,
-        `type`,
-        `seq`,
-        `price`,
-        `qty`,
-        `buy_date`,
-        `order_id`,
-        `result`,
-        `error_code`)
+        `tran_type`,
+        `target_price`,
+        `status`,
+        `tran_yn`,
+        `units`)
         VALUES
         (#{currency},
-        #{type},
-        #{seq},
-        #{price},
-        #{qty},
-        now(),
-        #{orderId},
-        #{result},
-        #{errorCode})
+        #{tran_type},
+        #{target_price},
+        #{status},
+        #{tran_yn},
+        #{units})
     </insert>
 
     <!-- /* select dual */ -->

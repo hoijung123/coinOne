@@ -8,9 +8,7 @@ import javax.inject.Inject;
 import coinone.tran.dao.OrderDAO;
 import coinone.tran.dao.TranConfigDAO;
 import coinone.tran.service.CallAPIService;
-import coinone.tran.vo.LimitOrderVO;
-import coinone.tran.vo.OrderVO;
-import coinone.tran.vo.TranConfigVO;
+import coinone.tran.vo.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import coinone.tran.dao.TickerDAO;
 import coinone.tran.util.Constants;
-import coinone.tran.vo.TickerDtlVO;
 
 /**
  * Handles requests for the application home page.
@@ -222,6 +219,7 @@ public class HomeController {
 
     @RequestMapping(value = "/tran/saveTranConfig", method = RequestMethod.POST)
     public String saveTranConfig(@RequestParam Map<String, String> params, Model model) throws Exception {
+        String mode = params.get("mode");
         String currency = params.get("currency");
         String tran_type = params.get("tran_type");
         String tran_yn = params.get("tran_yn");
@@ -230,8 +228,72 @@ public class HomeController {
         vo.setCurrency(currency);
         vo.setTran_type(tran_type);
         vo.setTran_yn(tran_yn);
-        tranConfigDAO.updateTranConfig(vo);
+        vo.setUnits((float) 0);
+        if ("N".equals(mode))
+        {
+            tranConfigDAO.registerTranConfig(vo);
+        } else if ("E".equals(mode))
+        {
+            tranConfigDAO.updateTranConfig(vo);
+        }
 
         return "redirect:listTranConfig";
+    }
+
+
+    @RequestMapping(value = "/tran/getBalances", method = RequestMethod.GET)
+    public String getBalances(@RequestParam Map<String, String> params, Model model) throws Exception {
+        CallAPIService comm = new CallAPIService();
+        BalanceVO vo = comm.getBalance(Constants.COIN_BCH);
+        TickerVO tickerVO = comm.getTickerAll();
+
+        List<BalanceDtlVO> balList = new ArrayList<>();
+        BalanceDtlVO bchVo = vo.getBch();
+        bchVo.setCurrency(Constants.COIN_BCH);
+        bchVo.setLast(tickerVO.getBch().getLast());
+        bchVo.setKrwBalance((long) (bchVo.getBalance() * bchVo.getLast()));
+
+        balList.add(bchVo);
+        BalanceDtlVO krwVo = vo.getKrw();
+        krwVo.setCurrency(Constants.COIN_KRW);
+        krwVo.setLast((long) 1);
+        krwVo.setKrwBalance(krwVo.getBalance().longValue());
+        balList.add(krwVo);
+
+        BalanceDtlVO btcVo = vo.getBtc();
+        btcVo.setCurrency(Constants.COIN_BTC);
+        btcVo.setLast(tickerVO.getBtc().getLast());
+        btcVo.setKrwBalance((long) (btcVo.getBalance() * btcVo.getLast()));
+        balList.add(btcVo);
+
+        BalanceDtlVO ethVo = vo.getEth();
+        ethVo.setCurrency(Constants.COIN_ETH);
+        ethVo.setLast(tickerVO.getEth().getLast());
+        ethVo.setKrwBalance((long) (ethVo.getBalance() * ethVo.getLast()));
+        balList.add(ethVo);
+
+        BalanceDtlVO etcVo = vo.getEtc();
+        etcVo.setCurrency(Constants.COIN_ETC);
+        etcVo.setLast(tickerVO.getEtc().getLast());
+        etcVo.setKrwBalance((long) (etcVo.getBalance() * etcVo.getLast()));
+        balList.add(etcVo);
+
+        BalanceDtlVO xrpVo = vo.getXrp();
+        xrpVo.setCurrency(Constants.COIN_XRP);
+        xrpVo.setLast(tickerVO.getXrp().getLast());
+        xrpVo.setKrwBalance((long) (xrpVo.getBalance() * xrpVo.getLast()));
+        balList.add(xrpVo);
+
+        BalanceDtlVO qtumVo = vo.getQtum();
+        qtumVo.setCurrency(Constants.COIN_QTUM);
+        qtumVo.setLast(tickerVO.getQtum().getLast());
+        qtumVo.setKrwBalance((long) (qtumVo.getBalance() * qtumVo.getLast()));
+        balList.add(qtumVo);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(balList);
+        model.addAttribute("balList", json);
+
+        return "tran/getBalances";
     }
 }

@@ -60,7 +60,10 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
         vo.setCurrency(sCurrency);
         vo.setTran_type(Constants.TRAN_BUY);
         TranConfigVO tranConfigBuyVO = tranConfigDAO.getTranConfig(vo);
-        String sTranBuyYn = tranConfigBuyVO.getTran_yn();
+        String sTranBuyYn = "N";
+        if (null != tranConfigBuyVO) {
+            sTranBuyYn = tranConfigBuyVO.getTran_yn();
+        }
 
         BalanceVO balanceVO = null;
 
