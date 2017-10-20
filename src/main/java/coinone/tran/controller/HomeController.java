@@ -296,4 +296,22 @@ public class HomeController {
 
         return "tran/getBalances";
     }
+
+    @RequestMapping(value = "/tran/listOrders", method = RequestMethod.GET)
+    public String listOrders(@RequestParam Map<String, String> params, Model model) throws Exception {
+        OrderVO vo = new OrderVO();
+        String currency = params.get("currency");
+        if (StringUtils.isEmpty(currency)) currency = Constants.COIN_BCH;
+        vo.setCurrency(currency);
+        List<OrderVO> orderList = orderDAO.getOrderList(vo);
+        model.addAttribute("orderList", orderList);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(orderList);
+        model.addAttribute("jsonOrderList", json);
+
+        model.addAttribute("currency", currency);
+
+        return "tran/listOrders";
+    }
 }

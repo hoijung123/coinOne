@@ -1,10 +1,6 @@
 package coinone.tran.batch;
 
-import java.awt.*;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -19,9 +15,7 @@ import coinone.tran.util.Constants;
 import coinone.tran.util.SendMail;
 import coinone.tran.vo.BalanceVO;
 import coinone.tran.vo.OrderRetVO;
-import coinone.tran.vo.OrdersBuyVO;
 import coinone.tran.vo.OrderVO;
-import coinone.tran.vo.TickerVO;
 import coinone.tran.vo.TranConfigVO;
 
 public class TranLimitSellProcessor implements ItemProcessor<String, String> {

@@ -1,10 +1,6 @@
 package coinone.tran.batch;
 
-import java.awt.*;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -111,7 +107,7 @@ public class TranLimitBuyProcessor implements ItemProcessor<String, String> {
                         sellVO.setType(Constants.TRAN_SELL);
                         sellVO.setSeq(sub.getSeq());
                         sellVO.setResult("N");
-                        // orderDao.updateOrder(sellVO);
+                        // orderDao.updateOrderLog(sellVO);
                         sendMail.sendMail("CoinOne Buy", sCurrency + "/" + " Buy " + "/" + " Unit:"
                                 + sub.getQty() + "/" + " Price:" + sub.getPrice());
                     } else {

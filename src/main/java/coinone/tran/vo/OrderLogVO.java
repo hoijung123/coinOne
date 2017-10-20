@@ -1,6 +1,6 @@
 package coinone.tran.vo;
 
-public class OrderLogVo extends BaseVO {
+public class OrderLogVO extends BaseVO {
 
 
 	Integer index = null;
@@ -14,13 +14,6 @@ public class OrderLogVo extends BaseVO {
 		this.seq = seq;
 	}
 
-	public String getBuyDate() {
-		return buyDate;
-	}
-
-	public void setBuyDate(String buyDate) {
-		this.buyDate = buyDate;
-	}
 
 	@Override
 	public String getResult() {
@@ -55,7 +48,16 @@ public class OrderLogVo extends BaseVO {
 	Integer base = null;
 	Long price = null;
 	Double qty = null;
-	String buyDate = "";
+
+	public String getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	String orderDate = "";
 	String orderId = "";
 	String result = "";
 

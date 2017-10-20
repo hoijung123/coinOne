@@ -3,7 +3,6 @@ package coinone.tran.dao;
 import java.util.List;
 
 import coinone.tran.vo.OrderVO;
-import coinone.tran.vo.OrdersBuyVO;
 
 
 public interface OrderDAO  {

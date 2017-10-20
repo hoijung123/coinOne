@@ -1,6 +1,5 @@
 package coinone.tran.batch;
 
-import java.awt.*;
 import java.util.List;
 
 import javax.inject.Inject;
